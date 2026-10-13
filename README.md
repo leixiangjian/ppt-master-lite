@@ -1,4 +1,5 @@
 # PPT Master Lite — 浏览器端 AI 驱动的 PPT 生成器
+![](20261013162913.jpg)
 
 [English](./README.en.md) | 中文
 
