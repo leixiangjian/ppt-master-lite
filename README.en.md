@@ -6,7 +6,7 @@ English | [中文](./README.md)
 Drop in a PDF, Word document, web URL, or plain text — AI automatically generates a beautifully designed presentation that's **natively editable in PowerPoint**. Runs entirely in your browser, no installation, no server, data stays local.
 
 > **Open and use**: Save the single HTML file locally, double-click to start creating presentations.
-
+access url:https://leixiangjian.github.io/ppt-master-lite/
 ---
 
 ## What Problem It Solves
