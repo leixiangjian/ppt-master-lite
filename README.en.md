@@ -1,5 +1,5 @@
 # PPT Master Lite — AI-Powered PPT Generator in the Browser
-![](20261013162913.jpg)
+![](20261013162913.png)
 
 English | [中文](./README.md)
 
