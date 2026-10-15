@@ -326,6 +326,17 @@ canvas.chartjs{width:100%!important;height:100%!important}
 .flow-lane-empty{color:var(--text-3);font-size:11.5px;text-align:center;padding:10px 6px;line-height:1.6}
 #flowAIModal .modal{width:560px}
 #flowAIStatus{font-size:12px;color:var(--text-2);min-height:18px;margin-top:8px;font-weight:500}
+
+/* ===== 导出下拉菜单 ===== */
+.export-wrap{position:relative;display:inline-block}
+#exportMenu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.14);padding:6px;min-width:230px;z-index:9999;display:none}
+#exportMenu.show{display:block;animation:menuIn .18s ease}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+#exportMenu button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:6px;font-size:13px;font-weight:500;text-align:left;color:var(--text);background:transparent}
+#exportMenu button:hover{background:var(--surface-3)}
+#exportMenu button .m-ico{width:22px;font-size:15px;text-align:center;flex-shrink:0}
+#exportMenu button .m-tag{font-size:10px;color:var(--text-3);margin-left:auto;background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600}
+#exportMenu .m-sep{height:1px;background:var(--border);margin:4px 8px}
 </style>
 </head>
 <body>
@@ -342,7 +353,16 @@ canvas.chartjs{width:100%!important;height:100%!important}
     <button class="tb-btn brand" onclick="enterPresenterMode()"><span class="ico">📺</span>演示者</button>
     <button class="tb-btn" onclick="openSettings()"><span class="ico">⚙</span>设置</button>
     <button class="tb-btn" onclick="saveAsHTML()"><span class="ico">💾</span>保存</button>
-    <button class="tb-btn primary" onclick="exportPPTX()"><span class="ico">⬇</span>导出</button>
+    <div class="export-wrap">
+      <button class="tb-btn primary" onclick="toggleExportMenu(event)"><span class="ico">⬇</span>导出 ▾</button>
+      <div id="exportMenu">
+        <button onclick="exportPPTX();hideExportMenu()"><span class="m-ico">📊</span>PowerPoint<span class="m-tag">.pptx</span></button>
+        <button onclick="exportPDF();hideExportMenu()"><span class="m-ico">📄</span>PDF 文档<span class="m-tag">.pdf</span></button>
+        <button onclick="exportWord();hideExportMenu()"><span class="m-ico">📝</span>Word 文档<span class="m-tag">.doc</span></button>
+        <div class="m-sep"></div>
+        <button onclick="saveAsHTML();hideExportMenu()"><span class="m-ico">💾</span>HTML 工程<span class="m-tag">.html</span></button>
+      </div>
+    </div>
   </header>
 
   <div id="ribbon">
@@ -452,9 +472,13 @@ canvas.chartjs{width:100%!important;height:100%!important}
         <div class="ribbon-group"><div class="ribbon-group-items">
           <button class="rb" onclick="checkQuality()"><span class="ico">✅</span><span class="txt">质量检查</span></button>
           <button class="rb" onclick="openSettings()"><span class="ico">⚙</span><span class="txt">API 设置</span></button>
-          <button class="rb" onclick="saveAsHTML()"><span class="ico">💾</span><span class="txt">保存 HTML</span></button>
-          <button class="rb" onclick="exportPPTX()"><span class="ico">⬇</span><span class="txt">导出 PPTX</span></button>
+          <button class="rb" onclick="exportPDF()"><span class="ico">📄</span><span class="txt">导出 PDF</span></button>
+          <button class="rb" onclick="exportWord()"><span class="ico">📝</span><span class="txt">导出 Word</span></button>
         </div><div class="ribbon-group-label">文件</div></div>
+        <div class="ribbon-group"><div class="ribbon-group-items">
+          <button class="rb" onclick="exportPPTX()"><span class="ico">📊</span><span class="txt">导出 PPTX</span></button>
+          <button class="rb" onclick="saveAsHTML()"><span class="ico">💾</span><span class="txt">保存 HTML</span></button>
+        </div><div class="ribbon-group-label">其他</div></div>
       </div>
     </div>
   </div>
@@ -484,7 +508,6 @@ canvas.chartjs{width:100%!important;height:100%!important}
   </div>
 </div>
 
-<!-- ===== 演示者视图 ===== -->
 <div id="presenterMode">
   <div id="presenterHeader">
     <span class="p-title">📺 演示者视图</span>
@@ -672,7 +695,6 @@ canvas.chartjs{width:100%!important;height:100%!important}
   </div>
 </div>
 
-<!-- ===== 流程图设计器 ===== -->
 <div class="modal-mask" id="flowchartModal">
   <div class="modal">
     <h2>🔷 流程图设计器 <span class="close-x" onclick="closeFlowchartDesigner()">×</span></h2>
@@ -719,7 +741,6 @@ canvas.chartjs{width:100%!important;height:100%!important}
   </div>
 </div>
 
-<!-- ===== AI 生成流程图 ===== -->
 <div class="modal-mask" id="flowAIModal">
   <div class="modal">
     <h2>✨ AI 生成流程图 <span class="close-x" onclick="closeModal('flowAIModal')">×</span></h2>
@@ -755,7 +776,7 @@ canvas.chartjs{width:100%!important;height:100%!important}
 <div id="toast"></div>
 <div id="loadingOverlay"><div class="spinner"></div><div id="loadingText">处理中…</div></div>
 
-<!-- ===== 依赖库 ===== -->
+<!-- 依赖库 -->
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -768,6 +789,9 @@ canvas.chartjs{width:100%!important;height:100%!important}
 <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.clouds.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.dots.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.halo.min.js"></script>
+<!-- PDF 导出 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 /* ========== 基础工具 ========== */
@@ -832,7 +856,6 @@ const BUILTIN_THEMES={
   presenton_professional:{category:"Presenton 风格",name:"专业商务风",primary:"1E3A5F",accent:"C9A227",bg:"FFFFFF",text:"2C3E50",heading:"Arial",body:"Arial",chartColors:["1E3A5F","C9A227","0EA5E9","EF4444","10B981"]},
   presenton_general:{category:"Presenton 风格",name:"通用柔和风",primary:"334155",accent:"3B82F6",bg:"F8FAFC",text:"334155",heading:"Helvetica",body:"Helvetica",chartColors:["3B82F6","334155","10B981","F59E0B","EF4444"]}
 };
-
 const COMMON_MASTERS=[
   {title:"COVER",showBrandBar:false,decorations:[{type:"rect",x:0,y:0,w:3.2,h:5.625,colorKey:"primary"},{type:"rect",x:3.2,y:1.5,w:0.06,h:2.5,colorKey:"accent"}]},
   {title:"CONTENT",showBrandBar:true,decorations:[{type:"rect",x:0.5,y:0.5,w:0.06,h:0.6,colorKey:"accent"},{type:"rect",x:9.3,y:0,w:0.7,h:0.7,colorKey:"primary",transparency:85}]},
@@ -872,7 +895,7 @@ const LAYOUT_TEMPLATES={
 
 /* ========== 全局状态 ========== */
 const TPL_STORAGE_KEY="ppt-master-templates-v1";
-const LS_DECK="ppt-master-lite-deck-v21";
+const LS_DECK="ppt-master-lite-deck-v22";
 const LS_ACTIVE_TPL="ppt-master-active-tpl-v1";
 let templates=[],activeTemplateId=null;
 let deck=null,curSlide=0,selectedId=null,canvasScale=1;
@@ -918,7 +941,6 @@ function mountWebGLForSlide(slide,parentEl,key){
   setTimeout(()=>applyWebGLBackground(bgDiv,slide.webglEffect,key),60);
   return bgDiv;
 }
-
 function currentTemplate(){return templates.find(t=>t.id===activeTemplateId)||templates[0];}
 function getTheme(){const t=currentTemplate();return t?t.theme:BUILTIN_THEMES.professional;}
 function getMasters(){const t=currentTemplate();return t?t.masters:BUILTIN_MASTERS.professional;}
@@ -2332,8 +2354,8 @@ function renderWizFileList(){
   wizMaterial=wizFiles.map(f=>"\n\n=== "+f.name+" ===\n"+f.text).join("");
 }
 function removeWizFile(i){wizFiles.splice(i,1);renderWizFileList();}
-async function parsePDF(){
-  const buf=await arguments[0].arrayBuffer();
+async function parsePDF(file){
+  const buf=await file.arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
   let out=[];
   for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const content=await page.getTextContent();out.push(content.items.map(it=>it.str).join(" "));}
@@ -2555,7 +2577,7 @@ async function exportPPTX(){
           }else if(el.type==="flowchart"){
             try{
               const svgNode=renderFlowchartForSlide(el);
-              const svgStr=new XMLSerializer().serializeToString(svgNode);
+              const svgStr='<?xml version="1.0" encoding="UTF-8"?>'+new XMLSerializer().serializeToString(svgNode);
               const dataUrl="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(svgStr)));
               slide.addImage({data:dataUrl,x:el.x,y:el.y,w:el.w,h:el.h});
             }catch(e){errorCount++;}
@@ -2570,7 +2592,225 @@ async function exportPPTX(){
   }catch(err){hideLoading();console.error(err);toast("导出失败："+(err.message||"未知错误"),6000);}
 }
 
-/* ========== 保存 ========== */
+/* ========== 导出菜单控制 ========== */
+function toggleExportMenu(e){
+  e.stopPropagation();
+  const menu=document.getElementById("exportMenu");
+  menu.classList.toggle("show");
+}
+function hideExportMenu(){
+  const menu=document.getElementById("exportMenu");
+  if(menu)menu.classList.remove("show");
+}
+document.addEventListener("click",e=>{
+  const wrap=document.querySelector(".export-wrap");
+  if(wrap&&!wrap.contains(e.target))hideExportMenu();
+});
+
+/* ========== 通用离屏渲染（供 PDF/Word 使用） ========== */
+function renderSlideToOffscreen(slide){
+  const wrap=document.createElement("div");
+  wrap.style.cssText=`position:relative;width:${PX_W}px;height:${PX_H}px;background:#${slide.bg||"FFFFFF"};overflow:hidden;font-family:"Inter","PingFang SC","Microsoft YaHei",sans-serif;`;
+  wrap.appendChild(renderMasterDecorations(slide));
+  const connectors=(slide.elements||[]).filter(el=>el.type==="connector");
+  const others=(slide.elements||[]).filter(el=>el.type!=="connector");
+  connectors.forEach(el=>{try{wrap.appendChild(buildElementNode(el,false));}catch(e){}});
+  others.forEach(el=>{
+    try{
+      const node=buildElementNode(el,false);
+      node.classList.remove("selected","is-draggable","has-action");
+      node.style.pointerEvents="none";
+      wrap.appendChild(node);
+    }catch(e){}
+  });
+  return wrap;
+}
+
+/* ========== PDF 导出 ========== */
+async function exportPDF(){
+  if(typeof html2canvas==="undefined"||typeof window.jspdf==="undefined"){
+    toast("PDF 库未加载，请检查网络后刷新",5000);
+    return;
+  }
+  showLoading("正在生成 PDF…");
+  const statusEl=document.getElementById("statusMsg");
+  try{
+    const {jsPDF}=window.jspdf;
+    const pageW=10,pageH=5.625;
+    const pdf=new jsPDF({orientation:"landscape",unit:"in",format:[pageW,pageH],compress:true});
+    const offscreen=document.createElement("div");
+    offscreen.style.cssText="position:fixed;left:-99999px;top:0;width:"+PX_W+"px;height:"+PX_H+"px;background:#fff;z-index:-1;";
+    document.body.appendChild(offscreen);
+    for(let i=0;i<deck.slides.length;i++){
+      const s=deck.slides[i];
+      if(statusEl)statusEl.textContent=`PDF 生成中 ${i+1}/${deck.slides.length}`;
+      offscreen.innerHTML="";
+      offscreen.appendChild(renderSlideToOffscreen(s));
+      await new Promise(r=>setTimeout(r,280));
+      const canvas=await html2canvas(offscreen,{
+        scale:2,
+        backgroundColor:"#"+(s.bg||"FFFFFF"),
+        useCORS:true,
+        allowTaint:false,
+        logging:false,
+        width:PX_W,
+        height:PX_H
+      });
+      const imgData=canvas.toDataURL("image/jpeg",0.92);
+      if(i>0)pdf.addPage([pageW,pageH],"landscape");
+      pdf.addImage(imgData,"JPEG",0,0,pageW,pageH,undefined,"FAST");
+    }
+    offscreen.remove();
+    const safeName=(deck.title||"presentation").replace(/[\\/:*?"<>|]/g,"_");
+    pdf.save(safeName+".pdf");
+    hideLoading();
+    if(statusEl)statusEl.textContent="就绪";
+    toast("✅ PDF 导出成功（"+deck.slides.length+" 页）");
+  }catch(err){
+    console.error("[PDF] 导出失败",err);
+    hideLoading();
+    if(statusEl)statusEl.textContent="就绪";
+    toast("PDF 导出失败："+(err.message||"未知错误"),6000);
+  }
+}
+
+/* ========== Word 导出 ========== */
+function exportWord(){
+  showLoading("正在生成 Word…");
+  try{
+    const t=getTheme();
+    const masters=getMasters();
+    let html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+      <meta charset="utf-8">
+      <title>${esc(deck.title||"Presentation")}</title>
+      <!--[if gte mso 9]>
+      <xml>
+        <w:WordDocument>
+          <w:View>Print</w:View>
+          <w:Zoom>100</w:Zoom>
+          <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+      </xml>
+      <![endif]-->
+      <style>
+        @page { size: 10in 5.625in; margin: 0; mso-page-orientation: landscape; }
+        body { margin: 0; font-family: Arial, "Microsoft YaHei", sans-serif; }
+        .slide-page { width: 10in; height: 5.625in; position: relative; page-break-after: always; overflow: hidden; box-sizing: border-box; }
+        .slide-page:last-child { page-break-after: auto; }
+        .el-text { white-space: pre-wrap; word-break: break-word; box-sizing: border-box; }
+        table { border-collapse: collapse; table-layout: fixed; }
+        td { vertical-align: top; }
+        .slide-num { position: absolute; bottom: 4px; right: 8px; font-size: 8pt; color: #999; }
+      </style>
+    </head>
+    <body>`;
+    deck.slides.forEach((s,idx)=>{
+      const bg=s.bg||"FFFFFF";
+      html+=`<div class="slide-page" style="background:#${bg}">`;
+      const m=masters.find(x=>x.title===s.master)||masters[1]||masters[0];
+      (m.decorations||[]).forEach(d=>{
+        const color=t[d.colorKey]||d.color||"CCCCCC";
+        const op=d.transparency?`opacity:${1-d.transparency/100};`:"";
+        html+=`<div style="position:absolute;left:${d.x}in;top:${d.y}in;width:${d.w}in;height:${d.h}in;background:#${color};${op}"></div>`;
+      });
+      if(m.showBrandBar){
+        html+=`<div style="position:absolute;left:0;top:5.35in;width:10in;height:0.28in;background:#${t.primary}"></div>`;
+        html+=`<div style="position:absolute;left:0.3in;top:5.4in;width:6in;height:0.22in;color:#FFFFFF;font-size:9pt;">${esc(deck.title||"PPT Master Lite Pro")}</div>`;
+      }
+      (s.elements||[]).forEach(el=>{
+        const pos=`position:absolute;left:${el.x}in;top:${el.y}in;width:${el.w}in;height:${el.h}in;box-sizing:border-box;`;
+        if(el.type==="text"){
+          const align=el.align||"left";
+          const weight=el.bold?"700":"400";
+          const style=el.italic?"italic":"normal";
+          const deco=el.underline?"underline":"none";
+          const ff=el.fontFace||"Arial";
+          const text=esc(el.text||"").replace(/\n/g,"<br>");
+          if(el.valign==="middle"||el.valign==="bottom"){
+            const vAlign=el.valign==="middle"?"middle":"bottom";
+            html+=`<div style="${pos}display:table;font-size:${el.fontSize}pt;color:#${el.color};font-weight:${weight};font-style:${style};text-decoration:${deco};font-family:${ff};"><div style="display:table-cell;vertical-align:${vAlign};text-align:${align};padding:3px 5px;">${text}</div></div>`;
+          }else{
+            html+=`<div class="el-text" style="${pos}font-size:${el.fontSize}pt;color:#${el.color};font-weight:${weight};font-style:${style};text-decoration:${deco};font-family:${ff};text-align:${align};padding:3px 5px;line-height:1.3;">${text}</div>`;
+          }
+        }
+        else if(el.type==="shape"){
+          let radius="0";
+          if(el.shapeType==="ellipse")radius="50%";
+          else if(el.shapeType==="roundRect")radius="12px";
+          html+=`<div style="${pos}background:#${el.fill||"E8EDF5"};border-radius:${radius};"></div>`;
+        }
+        else if(el.type==="image"&&el.dataUrl){
+          html+=`<img src="${el.dataUrl}" style="${pos}object-fit:cover;"/>`;
+        }
+        else if(el.type==="table"){
+          const rows=el.tableRows||[];
+          const hc=el.headerColor||t.primary;
+          html+=`<table style="${pos}font-size:10pt;border-collapse:collapse;table-layout:fixed;width:${el.w}in;height:${el.h}in;">`;
+          rows.forEach((row,ri)=>{
+            html+="<tr>";
+            (row||[]).forEach(cell=>{
+              const cellStyle=ri===0?`background:#${hc};color:#FFFFFF;font-weight:600;border:1px solid #d0d5dd;padding:5px 7px;`:`border:1px solid #d0d5dd;padding:5px 7px;color:#333333;`;
+              html+=`<td style="${cellStyle}">${esc(cell==null?"":cell)}</td>`;
+            });
+            html+="</tr>";
+          });
+          html+=`</table>`;
+        }
+        else if(el.type==="flowchart"){
+          try{
+            const svgNode=renderFlowchartForSlide(el);
+            const svgStr='<?xml version="1.0" encoding="UTF-8"?>'+new XMLSerializer().serializeToString(svgNode);
+            const b64=btoa(unescape(encodeURIComponent(svgStr)));
+            html+=`<img src="data:image/svg+xml;base64,${b64}" style="${pos}"/>`;
+          }catch(e){
+            html+=`<div style="${pos}border:1px dashed #ccc;display:table;color:#999;font-size:10pt;"><div style="display:table-cell;vertical-align:middle;text-align:center;">🔷 流程图</div></div>`;
+          }
+        }
+        else if(el.type==="chart"){
+          const cfg=el.chartConfig||{};
+          const series=(cfg.series||[]).map(sr=>sr.name+": "+(sr.values||[]).join(", ")).join("<br>");
+          html+=`<div style="${pos}border:1px solid #e0e0e0;background:#FAFAFA;font-size:9pt;color:#666;padding:8px;box-sizing:border-box;overflow:hidden;"><div style="font-weight:700;color:#333;margin-bottom:4px;">📊 ${esc(el.chartTitle||"图表")}</div><div style="font-size:8pt;line-height:1.5;">${series}</div></div>`;
+        }
+        else if(el.type==="quiz"){
+          const q=el.quizData||{question:"",options:[],answer:0};
+          const opts=(q.options||[]).map((o,i)=>{const mark=i===q.answer?"✔":"○";return `${mark} ${String.fromCharCode(65+i)}. ${esc(o)}`;}).join("<br>");
+          html+=`<div style="${pos}padding:8px;font-size:11pt;color:#333;"><div style="font-weight:700;margin-bottom:6px;">${esc(q.question||"问题")}</div><div style="font-size:10pt;line-height:1.7;">${opts}</div></div>`;
+        }
+        else if(el.type==="svg"&&el.svgCode){
+          try{
+            const svgStr='<?xml version="1.0" encoding="UTF-8"?>'+sanitizeSVG(el.svgCode);
+            const b64=btoa(unescape(encodeURIComponent(svgStr)));
+            html+=`<img src="data:image/svg+xml;base64,${b64}" style="${pos}"/>`;
+          }catch(e){}
+        }
+        else if(el.type==="video"){
+          html+=`<div style="${pos}background:#000;color:#fff;display:table;font-size:10pt;"><div style="display:table-cell;vertical-align:middle;text-align:center;">🎬 视频</div></div>`;
+        }
+      });
+      html+=`<div class="slide-num">${idx+1} / ${deck.slides.length}</div>`;
+      html+=`</div>`;
+    });
+    html+=`</body></html>`;
+    const blob=new Blob(['\ufeff',html],{type:"application/msword;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download=(deck.title||"presentation").replace(/[\\/:*?"<>|]/g,"_")+".doc";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+    hideLoading();
+    toast("✅ Word 导出成功（"+deck.slides.length+" 页）");
+  }catch(err){
+    console.error("[Word] 导出失败",err);
+    hideLoading();
+    toast("Word 导出失败："+(err.message||"未知错误"),6000);
+  }
+}
+
+/* ========== 保存 HTML ========== */
 function saveAsHTML(){
   try{
     const clone=document.documentElement.cloneNode(true);
@@ -2580,6 +2820,7 @@ function saveAsHTML(){
     const prm=clone.querySelector("#presentMode");if(prm)prm.classList.remove("show");
     const pm2=clone.querySelector("#presenterMode");if(pm2)pm2.classList.remove("show");
     const t=clone.querySelector("#toast");if(t)t.className="";
+    const em=clone.querySelector("#exportMenu");if(em)em.classList.remove("show");
     const ds=clone.ownerDocument.createElement("script");
     ds.type="application/json";ds.id="deck-data";
     const clean=JSON.parse(JSON.stringify(deck));
@@ -2617,7 +2858,6 @@ setInterval(saveLocal,5000);
 const FLOW_NS="http://www.w3.org/2000/svg";
 const FLOW_DESIGN_W=800;
 const FLOW_DESIGN_H=500;
-
 const FLOW_NODE_TYPES={
   start:   {name:"开始",     icon:"🟢", w:110, h:44, fill:"#DCFCE7", stroke:"#16A34A", shape:"stadium",       text:"开始"},
   process: {name:"处理",     icon:"▭",  w:130, h:54, fill:"#DBEAFE", stroke:"#2563EB", shape:"rect",          text:"处理步骤"},
@@ -2628,10 +2868,7 @@ const FLOW_NODE_TYPES={
   pageRef: {name:"跨页连接", icon:"➡️", w:140, h:54, fill:"#E0E7FF", stroke:"#4F46E5", shape:"rect",          text:"跳转到其他页"},
   end:     {name:"结束",     icon:"🔴", w:110, h:44, fill:"#FEE2E2", stroke:"#DC2626", shape:"stadium",       text:"结束"}
 };
-
-let flowEditor={
-  nodes:[],edges:[],swimlanes:[],laneDirection:"horizontal",selected:null,linkingFrom:null,editingId:null
-};
+let flowEditor={nodes:[],edges:[],swimlanes:[],laneDirection:"horizontal",selected:null,linkingFrom:null,editingId:null};
 
 function flowShapeElement(node){
   const {x,y,w,h,shape,fill,stroke}=node;
@@ -2647,7 +2884,6 @@ function flowShapeElement(node){
   return el;
 }
 function applyAttrs(el,obj){Object.entries(obj).forEach(([k,v])=>el.setAttribute(k,v));}
-
 function buildFlowNodeGroup(node,opts){
   opts=opts||{};
   const g=document.createElementNS(FLOW_NS,"g");
@@ -2989,8 +3225,7 @@ function flowAutoLayout(){
     const y=startY+li*layerGap;
     layer.forEach(n=>{n.x=Math.round(cx);n.y=y;cx+=n.w+30;});
   });
-  renderFlowCanvas();
-  toast("✅ 已自动排列");
+  renderFlowCanvas();toast("✅ 已自动排列");
 }
 function flowResetView(){const svg=document.getElementById("flowCanvas");if(svg)svg.setAttribute("viewBox",`0 0 ${FLOW_DESIGN_W} ${FLOW_DESIGN_H}`);}
 
@@ -3310,7 +3545,7 @@ function boot(){
     renderAll();
     setTimeout(fitCanvas,100);
     applyTemplateToDeck();
-    console.log("%c PPT Master Lite Pro · 全功能版 ","background:linear-gradient(135deg,#FF6B35,#EC4899);color:#fff;padding:4px 12px;border-radius:8px;font-weight:700");
+    console.log("%c PPT Master Lite Pro · 全功能完整版 ","background:linear-gradient(135deg,#FF6B35,#EC4899);color:#fff;padding:4px 12px;border-radius:8px;font-weight:700");
   }catch(err){
     console.error("启动失败:",err);
     deck={title:"未命名演示",author:"PPT Master Lite Pro",slides:[]};
