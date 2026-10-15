@@ -67,8 +67,8 @@ input,select,textarea{font-family:inherit;outline:none;color:inherit}
 #canvasWrap{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
 #canvasScroll{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:40px}
 #canvas{width:960px;height:540px;background:#fff;position:relative;flex-shrink:0;transform-origin:center center;overflow:hidden;border-radius:var(--r-md);box-shadow:0 20px 50px rgba(0,0,0,.08)}
-.master-deco{position:absolute;pointer-events:none;z-index:0}
-.el{position:absolute;cursor:move;user-select:none;z-index:1}
+.master-deco{position:absolute;pointer-events:none;z-index:1}
+.el{position:absolute;cursor:move;user-select:none;z-index:2}
 .el:hover{outline:1.5px solid rgba(17,17,17,.4)}
 .el.selected{outline:2px solid var(--dark)}
 .el.selected::before,.el.selected::after{content:"";position:absolute;width:9px;height:9px;background:#fff;border:2px solid var(--dark);border-radius:3px;z-index:11}
@@ -115,6 +115,7 @@ canvas.chartjs{width:100%!important;height:100%!important}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .field input[type=color]{width:100%;height:38px;background:var(--surface-2);border:1px solid transparent;border-radius:var(--r);cursor:pointer;padding:3px}
+.field input[type=range]{width:100%;accent-color:var(--brand)}
 .chk{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;font-weight:500}
 .chk input{width:auto;accent-color:var(--dark)}
 .empty-hint{color:var(--text-3);text-align:center;padding:60px 16px;font-size:13px;line-height:1.9}
@@ -223,7 +224,7 @@ canvas.chartjs{width:100%!important;height:100%!important}
 .p-card .p-card-head .stats.warn{color:#FBBF24}
 .p-card .p-card-body{flex:1;position:relative;overflow:hidden;background:#fff}
 .p-card .p-script{padding:16px;font-size:14px;line-height:1.85;color:rgba(255,255,255,.9);overflow-y:auto;flex:1;background:rgba(255,255,255,.05);white-space:pre-wrap}
-#presenterNav{height:52px;background:rgba(20,20,20,.98);display:flex;align-items:center;justify-content:center;gap:20px;border-top:1px solid rgba(255,255,255,.1);flex-shrink:0}
+#presenterNav{height:52px;background:rgba(20,20,20,.98);display:flex;align-items:center;justify-content:center;gap:20px;border-top:1px solid rgba(255,255,255,.1);flex-shrink:0;position:relative}
 #presenterNav button{color:#fff;background:rgba(255,255,255,.1);width:40px;height:40px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center}
 #presenterNav button:hover{background:rgba(255,255,255,.25)}
 #presenterNav .p-page{color:#fff;font-family:monospace;font-size:14px}
@@ -231,10 +232,6 @@ canvas.chartjs{width:100%!important;height:100%!important}
 
 /* ====== WebGL 背景层 ====== */
 #canvas .webgl-bg-layer,#presentSlide .webgl-bg-layer{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;transition:opacity .3s}
-#canvas .master-deco{position:absolute;pointer-events:none;z-index:1}
-#canvas .el{z-index:2}
-#presentSlide .present-el{z-index:2}
-#presentSlide .master-deco{z-index:1}
 
 /* ====== 播放模式 ====== */
 #presentMode{position:fixed;inset:0;background:#0A0A0A;z-index:10000;display:none;align-items:center;justify-content:center;flex-direction:column;overflow:hidden}
@@ -255,7 +252,7 @@ canvas.chartjs{width:100%!important;height:100%!important}
 @keyframes aSlideRight{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
 @keyframes aZoom{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
 @keyframes aBounce{0%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.05)}70%{transform:scale(.97)}100%{transform:scale(1)}}
-.present-el{position:absolute}
+.present-el{position:absolute;z-index:2}
 .present-el.has-action{cursor:pointer}
 .present-el.draggable{cursor:grab}
 .present-el.draggable:active{cursor:grabbing}
@@ -298,6 +295,37 @@ canvas.chartjs{width:100%!important;height:100%!important}
 #previewNav button:hover{background:#fff;color:#000}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-thumb{background:#D0D0D2;border-radius:var(--r-pill);border:2px solid transparent;background-clip:padding-box}
+
+/* ===== 流程图设计器 ===== */
+#flowchartModal .modal{width:1180px;max-width:96vw}
+#flowchartModal .body{padding:0;display:flex;height:640px}
+.flow-panel-left{width:200px;border-right:1px solid var(--border);padding:16px;overflow-y:auto;background:var(--surface-2);flex-shrink:0}
+.flow-panel-right{width:250px;border-left:1px solid var(--border);padding:16px;overflow-y:auto;background:var(--surface);flex-shrink:0}
+.flow-canvas-wrap{flex:1;position:relative;background:#fff;overflow:hidden}
+#flowCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:default}
+.flow-palette-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;background:#fff;border:1.5px solid #E0E0E2;border-radius:8px;margin-bottom:7px;cursor:pointer;font-size:12.5px;font-weight:600;transition:all .15s;text-align:left;color:var(--text)}
+.flow-palette-btn:hover{border-color:var(--brand);background:#FFF7F3;transform:translateX(2px)}
+.flow-palette-btn .fp-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.flow-toolbar{position:absolute;bottom:12px;left:12px;display:flex;gap:8px;z-index:5}
+.flow-toolbar-top{position:absolute;top:12px;right:12px;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 24px);justify-content:flex-end;z-index:5}
+.flow-mode-badge{position:absolute;top:12px;left:12px;background:var(--brand);color:#fff;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;z-index:6;box-shadow:0 4px 14px rgba(255,107,53,.4);display:none}
+.flow-mode-badge.show{display:block}
+#flowCanvas [data-flow-node]{transition:opacity .15s}
+#flowCanvas [data-flow-node]:hover{opacity:.88}
+.flow-empty-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#C8C8CC;font-size:14px;font-weight:500;pointer-events:none}
+.flow-props-empty{color:var(--text-3);text-align:center;padding:40px 12px;font-size:12.5px;line-height:1.9}
+.flow-tpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+.flow-tpl-card{padding:8px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;text-align:center;font-size:11px;font-weight:600;background:#fff;transition:all .15s}
+.flow-tpl-card:hover{border-color:var(--brand);background:#FFF7F3}
+.flow-tpl-card .ft-icon{font-size:20px;display:block;margin-bottom:4px}
+.flow-lane-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:#fff;border:1px solid var(--border);border-radius:6px;margin-bottom:5px;font-size:12px;font-weight:600}
+.flow-lane-item .lane-color{width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1px solid rgba(0,0,0,.08)}
+.flow-lane-item .lane-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flow-lane-item .lane-del{background:transparent;color:var(--text-3);font-size:15px;padding:2px 5px;border-radius:4px;line-height:1}
+.flow-lane-item .lane-del:hover{background:#FEE2E2;color:var(--danger)}
+.flow-lane-empty{color:var(--text-3);font-size:11.5px;text-align:center;padding:10px 6px;line-height:1.6}
+#flowAIModal .modal{width:560px}
+#flowAIStatus{font-size:12px;color:var(--text-2);min-height:18px;margin-top:8px;font-weight:500}
 </style>
 </head>
 <body>
@@ -342,7 +370,7 @@ canvas.chartjs{width:100%!important;height:100%!important}
         <div class="ribbon-group"><div class="ribbon-group-items">
           <button class="rb" onclick="addElement('table')"><span class="ico">▦</span><span class="txt">表格</span></button>
           <button class="rb" onclick="addElement('chart')"><span class="ico">📊</span><span class="txt">图表</span></button>
-          <button class="rb" onclick="addElement('video')"><span class="ico">🎬</span><span class="txt">视频</span></button>
+          <button class="rb" onclick="addElement('flowchart')"><span class="ico">🔷</span><span class="txt">流程图</span></button>
           <button class="rb" onclick="addElement('svg')"><span class="ico">✨</span><span class="txt">SVG</span></button>
         </div><div class="ribbon-group-label">媒体与矢量</div></div>
         <div class="ribbon-group"><div class="ribbon-group-items">
@@ -365,9 +393,11 @@ canvas.chartjs{width:100%!important;height:100%!important}
           <button class="rb" onclick="addElement('videoBg')"><span class="ico">🎥</span><span class="txt">视频背景</span></button>
         </div><div class="ribbon-group-label">对象与媒体</div></div>
         <div class="ribbon-group"><div class="ribbon-group-items">
+          <button class="rb" onclick="addElement('flowchart')"><span class="ico">🔷</span><span class="txt">流程图</span></button>
+          <button class="rb" onclick="openFlowchartDesigner()"><span class="ico">✏️</span><span class="txt">流程图编辑器</span></button>
+          <button class="rb" onclick="openFlowAIModal()"><span class="ico">✨</span><span class="txt">AI 生成流程图</span></button>
           <button class="rb" onclick="openSVGPresets()"><span class="ico">🎨</span><span class="txt">SVG 动画库</span></button>
-          <button class="rb" onclick="addElement('svg')"><span class="ico">✨</span><span class="txt">SVG 动画</span></button>
-        </div><div class="ribbon-group-label">SVG 矢量动画</div></div>
+        </div><div class="ribbon-group-label">图表与矢量</div></div>
         <div class="ribbon-group"><div class="ribbon-group-items">
           <button class="rb" onclick="addElement('slider')"><span class="ico">🎚</span><span class="txt">滑块控件</span></button>
           <button class="rb" onclick="addElement('display')"><span class="ico">🔢</span><span class="txt">数值显示</span></button>
@@ -454,7 +484,7 @@ canvas.chartjs{width:100%!important;height:100%!important}
   </div>
 </div>
 
-<!-- ===== 增强版演示者视图 ===== -->
+<!-- ===== 演示者视图 ===== -->
 <div id="presenterMode">
   <div id="presenterHeader">
     <span class="p-title">📺 演示者视图</span>
@@ -481,7 +511,7 @@ canvas.chartjs{width:100%!important;height:100%!important}
       </div>
     </div>
   </div>
-  <div id="presenterNav" style="position:relative">
+  <div id="presenterNav">
     <button onclick="presenterNav(-1)">◀</button>
     <span class="p-page" id="presenterPage">1 / 1</span>
     <button onclick="presenterNav(1)">▶</button>
@@ -642,6 +672,80 @@ canvas.chartjs{width:100%!important;height:100%!important}
   </div>
 </div>
 
+<!-- ===== 流程图设计器 ===== -->
+<div class="modal-mask" id="flowchartModal">
+  <div class="modal">
+    <h2>🔷 流程图设计器 <span class="close-x" onclick="closeFlowchartDesigner()">×</span></h2>
+    <div class="body">
+      <div class="flow-panel-left">
+        <div class="section-title" style="margin-top:0">节点类型</div>
+        <div id="flowNodePalette"></div>
+        <div class="section-title">快速模板</div>
+        <div class="flow-tpl-grid" id="flowTplGrid"></div>
+        <div class="section-title">泳道图</div>
+        <div id="flowLaneList"></div>
+        <button class="btn sm" style="width:100%;justify-content:center;margin-top:4px" onclick="flowAddSwimlane()">+ 添加泳道</button>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="btn sm" style="flex:1;justify-content:center" onclick="flowSetLaneDir('horizontal')" id="flowDirH">横向</button>
+          <button class="btn sm" style="flex:1;justify-content:center" onclick="flowSetLaneDir('vertical')" id="flowDirV">纵向</button>
+        </div>
+      </div>
+      <div class="flow-canvas-wrap" id="flowCanvasWrap">
+        <svg id="flowCanvas" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="flow-empty-hint" id="flowEmptyHint">点击左侧节点类型开始绘制</div>
+        <div class="flow-mode-badge" id="flowModeBadge">🔗 连线模式：依次点击起点、终点节点</div>
+        <div class="flow-toolbar-top">
+          <button class="btn sm" onclick="openFlowAIModal()" style="background:linear-gradient(135deg,#FF6B35,#EC4899);color:#fff;border-color:transparent">✨ AI 生成</button>
+          <button class="btn sm" onclick="flowAddSwimlane()">🏊 泳道</button>
+          <button class="btn sm" id="flowLinkBtn" onclick="flowToggleLinkMode()">🔗 连线</button>
+          <button class="btn sm" onclick="flowDeleteSelected()">🗑 删除</button>
+        </div>
+        <div class="flow-toolbar">
+          <button class="btn sm" onclick="flowClearAll()">清空</button>
+          <button class="btn sm" onclick="flowAutoLayout()">📐 自动排列</button>
+          <button class="btn sm" onclick="flowResetView()">重置视图</button>
+        </div>
+      </div>
+      <div class="flow-panel-right">
+        <div class="section-title" style="margin-top:0">属性</div>
+        <div id="flowPropBody"></div>
+      </div>
+    </div>
+    <div class="foot">
+      <span style="flex:1;font-size:12px;color:var(--text-3)" id="flowStatusInfo">0 个节点 · 0 条连线</span>
+      <button class="btn" onclick="closeFlowchartDesigner()">取消</button>
+      <button class="btn primary" onclick="insertFlowchart()">插入到幻灯片</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AI 生成流程图 ===== -->
+<div class="modal-mask" id="flowAIModal">
+  <div class="modal">
+    <h2>✨ AI 生成流程图 <span class="close-x" onclick="closeModal('flowAIModal')">×</span></h2>
+    <div class="body">
+      <div class="hint" style="margin-bottom:14px">用自然语言描述流程，AI 会自动生成结构化流程图</div>
+      <div class="field">
+        <label>流程描述</label>
+        <textarea id="flowAIPrompt" style="min-height:140px" placeholder="例如：用户注册流程：用户提交手机号 → 系统发送验证码 → 用户输入验证码 → 判断验证码是否正确 → 是则创建账号并跳转首页，否则提示错误并重新发送验证码。"></textarea>
+      </div>
+      <div class="field">
+        <label>布局方式</label>
+        <select id="flowAILayout">
+          <option value="vertical">垂直流程（默认）</option>
+          <option value="swimlane">泳道图（多角色/部门）</option>
+          <option value="horizontal">横向流程</option>
+        </select>
+      </div>
+      <div id="flowAIStatus"></div>
+    </div>
+    <div class="foot">
+      <button class="btn" onclick="closeModal('flowAIModal')">取消</button>
+      <button class="btn primary" id="flowAIBtn" onclick="flowAIGenerate()">✨ 生成流程图</button>
+    </div>
+  </div>
+</div>
+
 <div id="previewMask">
   <button id="closePreview" onclick="exitPreview()">×</button>
   <div id="previewBox"></div>
@@ -651,13 +755,12 @@ canvas.chartjs{width:100%!important;height:100%!important}
 <div id="toast"></div>
 <div id="loadingOverlay"><div class="spinner"></div><div id="loadingText">处理中…</div></div>
 
-<!-- ===== 库依赖 ===== -->
+<!-- ===== 依赖库 ===== -->
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<!-- Three.js + Vanta.js（WebGL 背景） -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.waves.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
@@ -685,7 +788,7 @@ function closeModal(id){const el=document.getElementById(id);if(el)el.classList.
 function sanitizeSVG(code){if(!code)return "";let s=String(code);s=s.replace(/<script[\s\S]*?<\/script>/gi,"");s=s.replace(/\son\w+\s*=\s*"[^"]*"/gi,"");s=s.replace(/\son\w+\s*=\s*'[^']*'/gi,"");s=s.replace(/\son\w+\s*=\s*[^\s>]+/gi,"");s=s.replace(/javascript:/gi,"");return s;}
 function extractJSON(text){if(!text)return null;try{return JSON.parse(text);}catch(e){}const m=text.match(/```(?:json)?\s*([\s\S]*?)```/);if(m){try{return JSON.parse(m[1]);}catch(e){}}const s=text.indexOf("{"),e=text.lastIndexOf("}");if(s>=0&&e>s){try{return JSON.parse(text.slice(s,e+1));}catch(e){}}return null;}
 
-/* ========== 37 + 4 Presenton 主题 ========== */
+/* ========== 主题 ========== */
 const BUILTIN_THEMES={
   professional:{category:"商务通用",name:"商务深蓝",primary:"1A1A2E",accent:"E94560",bg:"FFFFFF",text:"363636",heading:"Arial",body:"Arial",chartColors:["1A1A2E","E94560","0F3460","16213E","533483"]},
   minimal:{category:"商务通用",name:"极简白",primary:"333333",accent:"007AFF",bg:"FFFFFF",text:"444444",heading:"Helvetica",body:"Helvetica",chartColors:["007AFF","34C759","FF9500","FF3B30","5856D6"]},
@@ -724,14 +827,12 @@ const BUILTIN_THEMES={
   media:{category:"创业传媒",name:"媒体紫红",primary:"2D1B4E",accent:"F43F5E",bg:"FFFFFF",text:"1F2937",heading:"Arial",body:"Arial",chartColors:["F43F5E","2D1B4E","A855F7","F59E0B","06B6D4"]},
   greenenergy:{category:"环保能源",name:"环保绿意",primary:"14532D",accent:"84CC16",bg:"FFFFFF",text:"1A2E1A",heading:"Georgia",body:"Arial",chartColors:["84CC16","14532D","22C55E","F59E0B","0EA5E9"]},
   nature:{category:"环保能源",name:"自然森绿",primary:"1B4332",accent:"52B788",bg:"F7FBF8",text:"1B4332",heading:"Georgia",body:"Arial",chartColors:["52B788","1B4332","74C69D","F59E0B","0EA5E9"]},
-  /* ===== Presenton 参考风格 ===== */
   presenton_classic:{category:"Presenton 风格",name:"经典编辑风",primary:"1A237E",accent:"FF6F00",bg:"FFFFFF",text:"212121",heading:"Georgia",body:"Arial",chartColors:["1A237E","FF6F00","2E7D32","C62828","6A1B9A"]},
   presenton_modern:{category:"Presenton 风格",name:"现代渐变风",primary:"0F172A",accent:"06B6D4",bg:"FFFFFF",text:"1E293B",heading:"Inter",body:"Inter",chartColors:["06B6D4","0F172A","8B5CF6","10B981","F59E0B"]},
   presenton_professional:{category:"Presenton 风格",name:"专业商务风",primary:"1E3A5F",accent:"C9A227",bg:"FFFFFF",text:"2C3E50",heading:"Arial",body:"Arial",chartColors:["1E3A5F","C9A227","0EA5E9","EF4444","10B981"]},
   presenton_general:{category:"Presenton 风格",name:"通用柔和风",primary:"334155",accent:"3B82F6",bg:"F8FAFC",text:"334155",heading:"Helvetica",body:"Helvetica",chartColors:["3B82F6","334155","10B981","F59E0B","EF4444"]}
 };
 
-/* 通用母版 */
 const COMMON_MASTERS=[
   {title:"COVER",showBrandBar:false,decorations:[{type:"rect",x:0,y:0,w:3.2,h:5.625,colorKey:"primary"},{type:"rect",x:3.2,y:1.5,w:0.06,h:2.5,colorKey:"accent"}]},
   {title:"CONTENT",showBrandBar:true,decorations:[{type:"rect",x:0.5,y:0.5,w:0.06,h:0.6,colorKey:"accent"},{type:"rect",x:9.3,y:0,w:0.7,h:0.7,colorKey:"primary",transparency:85}]},
@@ -750,7 +851,7 @@ const SVG_PRESETS=[
   {name:"星星闪烁",svg:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L60 40 L90 40 L66 58 L74 90 L50 70 L26 90 L34 58 L10 40 L40 40 Z" fill="#FFC107"><animate attributeName="opacity" values="1;0.4;1;0.6;1" dur="2s" repeatCount="indefinite"/></path></svg>`}
 ];
 
-/* ========== 布局模板（含 3 个 Presenton 风格） ========== */
+/* ========== 布局模板 ========== */
 const LAYOUT_TEMPLATES={
   cover:{name:"封面",icon:"🖼️",desc:"大标题+副标题居中",master:"COVER",generate:function(t){return [mkText("演示标题",3.5,1.9,6,1.2,36,{bold:true,align:"center",color:t.primary,fontFace:t.heading}),mkText("副标题 / 汇报人 / 日期",3.5,3.3,6,0.6,16,{align:"center",color:t.text,fontFace:t.body})];}},
   content:{name:"内容",icon:"📄",desc:"标题+要点列表",master:"CONTENT",generate:function(t){return [mkText("页面标题",0.6,0.45,8.8,0.7,22,{bold:true,color:t.primary,fontFace:t.heading}),mkText("• 要点一\n• 要点二\n• 要点三",0.7,1.45,8.6,3.6,16,{color:t.text,fontFace:t.body})];}},
@@ -764,7 +865,6 @@ const LAYOUT_TEMPLATES={
   comparison:{name:"对比",icon:"⚖️",desc:"A vs B 对比",master:"CONTENT",generate:function(t){return [mkText("方案对比",0.6,0.45,8.8,0.7,22,{bold:true,color:t.primary,fontFace:t.heading}),mkText("方案 A",0.8,1.3,4,0.6,18,{bold:true,align:"center",color:t.primary,fontFace:t.heading}),mkText("• 优点一\n• 优点二\n• 缺点一",0.8,2.1,4,2.8,13,{color:t.text}),mkText("方案 B",5.2,1.3,4,0.6,18,{bold:true,align:"center",color:t.accent,fontFace:t.heading}),mkText("• 优点三\n• 优点四\n• 缺点二",5.2,2.1,4,2.8,13,{color:t.text})];}},
   iconGrid:{name:"图标网格",icon:"▦",desc:"2x2 图标卡",master:"CONTENT",generate:function(t){return [mkText("核心能力",0.6,0.45,8.8,0.7,22,{bold:true,color:t.primary,fontFace:t.heading}),mkText("🎯\n\n能力一\n简要描述",0.6,1.4,4.2,1.7,13,{align:"center",color:t.text}),mkText("🚀\n\n能力二\n简要描述",5.2,1.4,4.2,1.7,13,{align:"center",color:t.text}),mkText("💡\n\n能力三\n简要描述",0.6,3.3,4.2,1.7,13,{align:"center",color:t.text}),mkText("🔒\n\n能力四\n简要描述",5.2,3.3,4.2,1.7,13,{align:"center",color:t.text})];}},
   imageText:{name:"图文混排",icon:"🖼",desc:"半出血图+文字",master:"CONTENT",generate:function(t){return [mkText("页面标题",0.6,0.45,5,0.7,22,{bold:true,color:t.primary,fontFace:t.heading}),mkText("• 要点一\n• 要点二\n• 要点三\n• 要点四",0.7,1.4,4.5,3.7,15,{color:t.text}),{id:uid(),type:"image",x:5.5,y:0,w:4.5,h:5.625,dataUrl:"",fit:"cover"}];}},
-  /* ===== Presenton 风格布局 ===== */
   editorial:{name:"杂志编辑",icon:"📰",desc:"大标题+双栏正文",master:"CONTENT",generate:function(t){return [mkText("大标题在这里",0.6,0.5,8.8,1.0,32,{bold:true,color:t.primary,fontFace:t.heading}),{id:uid(),type:"shape",shapeType:"rect",x:0.6,y:1.6,w:3,h:0.06,fill:t.accent},{id:uid(),type:"shape",shapeType:"rect",x:0.6,y:1.6,w:3,h:0.06,fill:t.accent},mkText("正文左栏内容\n\n这里是杂志风格的左栏正文，适合放置主要论述内容。",0.6,1.9,4.2,3.2,13,{color:t.text,fontFace:t.body}),mkText("正文右栏内容\n\n右栏可以作为补充说明或数据引用，与左栏形成对比。",5.2,1.9,4.2,3.2,13,{color:t.text,fontFace:t.body})];}},
   dataStory:{name:"数据叙事",icon:"🔢",desc:"大数字+说明+图表",master:"CONTENT",generate:function(t){return [mkText("关键数据",0.6,0.5,8.8,0.7,22,{bold:true,color:t.primary,fontFace:t.heading}),mkText("92%",0.8,1.5,3.5,1.6,72,{bold:true,align:"center",color:t.accent,fontFace:t.heading}),mkText("用户满意度",0.8,3.2,3.5,0.5,14,{align:"center",color:t.text}),{id:uid(),type:"chart",x:5,y:1.5,w:4.4,h:3.5,chartTitle:"趋势",chartConfig:{type:"line",labels:["Q1","Q2","Q3","Q4"],series:[{name:"指标",values:[65,72,85,92]}]}}];}},
   splitQuote:{name:"分屏引用",icon:"💭",desc:"左图右引用文字",master:"CONTENT",generate:function(t){return [{id:uid(),type:"image",x:0,y:0,w:5,h:5.625,dataUrl:"",fit:"cover"},mkText("\u201C真正有价值的设计，是让人看不出设计的存在。\u201D",5.8,1.5,3.6,2.5,22,{color:t.primary,fontFace:t.heading,italic:true}),mkText("—— 设计师语录",5.8,4.2,3.6,0.5,14,{color:t.accent,fontFace:t.body,align:"right"})];}}
@@ -780,17 +880,9 @@ let chartInstances={},previewIndex=0;
 let wizStep=1,wizTab="paste",wizMaterial="",wizOutline=null;
 let wizFiles=[],wizSelectedTplId=null,tplImgDataUrl=null;
 let presentState={active:false,index:0,notes:false,toc:false};
-/* 增强版演示者状态：双计时器 + 逐字稿统计 */
-let presenterState={
-  active:false,
-  index:0,
-  timer:null,
-  globalSeconds:0,
-  perSlideSeconds:0
-};
+let presenterState={active:false,index:0,timer:null,globalSeconds:0,perSlideSeconds:0};
 let interactiveVars={};
 let editingSVGId=null;
-/* WebGL 实例管理：{canvas: vantaInstance, present: vantaInstance} */
 let webglEffects={};
 let webglAvailable=(typeof THREE!=="undefined"&&typeof VANTA!=="undefined");
 
@@ -804,44 +896,20 @@ const WEBGL_EFFECTS=[
   {v:"dots",n:"⚬ 粒子 Dots"},
   {v:"halo",n:"💫 光晕 Halo"}
 ];
-function getVantaMap(){
-  if(typeof VANTA==="undefined")return {};
-  return {waves:VANTA.WAVES,net:VANTA.NET,fog:VANTA.FOG,clouds:VANTA.CLOUDS,dots:VANTA.DOTS,halo:VANTA.HALO};
-}
-function destroyWebGLBackground(key){
-  if(webglEffects[key]){
-    try{webglEffects[key].destroy();}catch(e){}
-    delete webglEffects[key];
-  }
-}
+function getVantaMap(){if(typeof VANTA==="undefined")return {};return {waves:VANTA.WAVES,net:VANTA.NET,fog:VANTA.FOG,clouds:VANTA.CLOUDS,dots:VANTA.DOTS,halo:VANTA.HALO};}
+function destroyWebGLBackground(key){if(webglEffects[key]){try{webglEffects[key].destroy();}catch(e){}delete webglEffects[key];}}
 function applyWebGLBackground(el,effectName,key){
   if(!webglAvailable||!el)return;
   destroyWebGLBackground(key);
-  const map=getVantaMap();
-  const fn=map[effectName];
-  if(!fn)return;
+  const map=getVantaMap();const fn=map[effectName];if(!fn)return;
   const t=getTheme();
   try{
-    webglEffects[key]=fn({
-      el:el,
-      mouseControls:false,
-      touchControls:false,
-      gyroControls:false,
-      minHeight:100,
-      minWidth:100,
-      scale:1.0,
-      scaleMobile:1.0,
-      color:parseInt(t.primary,16),
-      color2:parseInt(t.accent,16),
-      backgroundColor:parseInt(t.bg,16)
-    });
+    webglEffects[key]=fn({el:el,mouseControls:false,touchControls:false,gyroControls:false,minHeight:100,minWidth:100,scale:1.0,scaleMobile:1.0,color:parseInt(t.primary,16),color2:parseInt(t.accent,16),backgroundColor:parseInt(t.bg,16)});
   }catch(err){console.warn("WebGL 初始化失败:",err);}
 }
 function mountWebGLForSlide(slide,parentEl,key){
   const op=slide.webglOpacity!=null?slide.webglOpacity:0.35;
-  if(!slide.webglEffect||!webglAvailable){
-    return null;
-  }
+  if(!slide.webglEffect||!webglAvailable)return null;
   const bgDiv=document.createElement("div");
   bgDiv.className="webgl-bg-layer";
   bgDiv.style.opacity=op;
@@ -865,16 +933,7 @@ function newSlide(layoutKey){
   const lt=LAYOUT_TEMPLATES[layoutKey]||LAYOUT_TEMPLATES.content;
   const master=lt.master;
   const slideBg=master==="SECTION"?t.primary:t.bg;
-  return {
-    id:uid(),
-    bg:slideBg,
-    elements:lt.generate(t),
-    notes:"",
-    transition:"fade",
-    master:master,
-    webglEffect:"",
-    webglOpacity:0.35
-  };
+  return {id:uid(),bg:slideBg,elements:lt.generate(t),notes:"",transition:"fade",master:master,webglEffect:"",webglOpacity:0.35};
 }
 function initDeck(){
   deck={title:"未命名演示",author:"PPT Master Lite Pro",slides:[]};
@@ -921,10 +980,7 @@ function renderTemplateLibrary(){
     if(!groups[cat])groups[cat]=[];
     groups[cat].push(t);
   });
-  const cats=Object.keys(groups).sort((a,b)=>{
-    const ia=catOrder.indexOf(a),ib=catOrder.indexOf(b);
-    return (ia<0?99:ia)-(ib<0?99:ib);
-  });
+  const cats=Object.keys(groups).sort((a,b)=>{const ia=catOrder.indexOf(a),ib=catOrder.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
   let html="";
   cats.forEach(cat=>{
     html+=`<div class="template-cat-header"><div class="cat-name">${esc(cat)}</div><div class="cat-count">${groups[cat].length} 个</div><div class="cat-line"></div></div>`;
@@ -1106,14 +1162,12 @@ function renderSlideList(){
 }
 function renderCanvas(){
   const cv=document.getElementById("canvas");if(!cv)return;
-  /* 销毁旧 WebGL */
   destroyWebGLBackground("canvas");
   cv.innerHTML="";
   const s=deck.slides[curSlide];if(!s)return;
   cv.style.background="#"+((s.bg||"FFFFFF"));
   Object.values(chartInstances).forEach(c=>{try{c.destroy();}catch(e){}});
   chartInstances={};
-  /* WebGL 背景层（最底层） */
   mountWebGLForSlide(s,cv,"canvas");
   cv.appendChild(renderMasterDecorations(s));
   (s.elements||[]).filter(el=>el.type==="connector").forEach(el=>{try{cv.appendChild(buildElementNode(el,false));}catch(e){}});
@@ -1173,6 +1227,16 @@ function buildElementNode(el,isMini){
   else if(el.type==="svg"){
     if(isMini){const ph=document.createElement("div");ph.className="ph";ph.textContent="✨";ph.style.background="linear-gradient(135deg,#FFF1E8,#F3EBFF)";ph.style.border="none";d.appendChild(ph);}
     else{const wrap=document.createElement("div");wrap.className="el-svg-wrap";wrap.innerHTML=sanitizeSVG(el.svgCode||"");d.appendChild(wrap);}
+  }
+  else if(el.type==="flowchart"){
+    if(isMini){
+      const ph=document.createElement("div");ph.className="ph";
+      ph.innerHTML="🔷";ph.style.background="linear-gradient(135deg,#EBF4FF,#F3E8FF)";
+      ph.style.border="none";ph.style.fontSize="22px";d.appendChild(ph);
+    }else{
+      try{const svgNode=renderFlowchartForSlide(el);d.appendChild(svgNode);}
+      catch(err){const ph=document.createElement("div");ph.className="ph";ph.textContent="🔷 流程图";d.appendChild(ph);}
+    }
   }
   else if(el.type==="table"){
     if(isMini){const ph=document.createElement("div");ph.className="ph";ph.textContent="▦";d.appendChild(ph);}
@@ -1319,6 +1383,7 @@ function attachInteractions(node,el){
   }
   if(el.type==="video")node.addEventListener("dblclick",e=>{e.stopPropagation();pickVideoFile();});
   if(el.type==="svg")node.addEventListener("dblclick",e=>{e.stopPropagation();openSVGEditor(el.id);});
+  if(el.type==="flowchart")node.addEventListener("dblclick",e=>{e.stopPropagation();openFlowchartDesigner(el.id);});
 }
 function startDrag(e,node,el){
   e.preventDefault();
@@ -1351,7 +1416,6 @@ function redrawAllConnectors(){
   s.elements.filter(el=>el.type==="connector").forEach(conn=>{const node=document.querySelector('.el[data-id="'+conn.id+'"]');if(node)drawConnector(node,conn);});
 }
 document.addEventListener("keydown",e=>{
-  /* 演示者视图快捷键 */
   if(presenterState.active){
     if(e.key==="Escape")exitPresenterMode();
     else if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown"){e.preventDefault();presenterNav(1);}
@@ -1399,7 +1463,6 @@ function renderProps(){
     const masters=getMasters();
     const masterOptions=masters.map(m=>{const label={COVER:"封面",CONTENT:"内容",SECTION:"章节"}[m.title]||m.title;return `<option value="${m.title}" ${s.master===m.title?'selected':''}>${label}</option>`;}).join("");
     const transitions=[{v:"none",n:"无"},{v:"fade",n:"淡入淡出"},{v:"slide",n:"滑动"},{v:"zoom",n:"缩放"}].map(t=>`<option value="${t.v}" ${s.transition===t.v?'selected':''}>${t.n}</option>`).join("");
-    /* WebGL 效果选择器 */
     const webglOptions=WEBGL_EFFECTS.map(o=>`<option value="${o.v}" ${(s.webglEffect||"")===o.v?'selected':''}>${o.n}</option>`).join("");
     const webglSupport=webglAvailable?"":"（不可用）";
     body.innerHTML=`<div class="section-title">页面设置</div>
@@ -1414,10 +1477,10 @@ function renderProps(){
       <div class="hint" style="margin-bottom:14px">💡 建议在封面/章节页使用，内容页保持静态以避免干扰阅读</div>
       <div class="section-title brand">🎬 页面转场</div>
       <div class="field"><label>转场效果</label><select onchange="setTransition(this.value)">${transitions}</select></div>
-      <div class="empty-hint">点击画布中的元素编辑属性<br>双击 SVG 元素可编辑代码</div>`;
+      <div class="empty-hint">点击画布中的元素编辑属性<br>双击 SVG / 流程图 元素可编辑</div>`;
     return;
   }
-  const typeLabel={text:"文本",shape:"形状",table:"表格",chart:"图表",image:"图片",quiz:"测验题",video:"视频",slider:"滑块",display:"数值显示",connector:"连接线",svg:"SVG 动画"}[el.type]||el.type;
+  const typeLabel={text:"文本",shape:"形状",table:"表格",chart:"图表",image:"图片",quiz:"测验题",video:"视频",slider:"滑块",display:"数值显示",connector:"连接线",svg:"SVG 动画",flowchart:"流程图"}[el.type]||el.type;
   let html=`<div class="section-title">${typeLabel}</div>`;
   if(el.type!=="connector"){
     html+=`<div class="row2"><div class="field"><label>X (in)</label><input type="number" step="0.05" value="${el.x}" oninput="setProp('x',+this.value)"/></div>
@@ -1440,6 +1503,15 @@ function renderProps(){
       <div class="field"><label>填充颜色</label><input type="color" value="#${el.fill||'E8EDF5'}" oninput="setProp('fill',this.value.slice(1))"/></div>`;
   }else if(el.type==="image"){
     html+=`<div class="field"><label>替换图片</label><input type="file" accept="image/*" onchange="replaceImage(this)"/></div>`;
+  }else if(el.type==="flowchart"){
+    const nodeCount=(el.nodes||[]).length;
+    const edgeCount=(el.edges||[]).length;
+    const laneCount=(el.swimlanes||[]).length;
+    html+=`<div class="section-title brand">🔷 流程图设置</div>
+      <div style="font-size:12.5px;color:var(--text-2);line-height:1.8;padding:8px 0">
+        ${nodeCount} 个节点 · ${edgeCount} 条连线${laneCount?` · ${laneCount} 条泳道`:""}
+      </div>
+      <button class="btn sm" style="width:100%;justify-content:center;margin-top:6px" onclick="openFlowchartDesigner('${el.id}')">✏️ 编辑流程图</button>`;
   }else if(el.type==="svg"){
     html+=`<div class="section-title brand">✨ SVG 设置</div>
       <div class="field"><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm" style="flex:1" onclick="openSVGEditor('${el.id}')">📝 编辑代码</button><button class="btn sm" style="flex:1" onclick="openSVGPresets()">🎨 预设库</button></div></div>
@@ -1541,20 +1613,8 @@ function setSlideBg(v){deck.slides[curSlide].bg=v.slice(1);renderAll();}
 function setSlideMaster(v){deck.slides[curSlide].master=v;renderAll();}
 function setNotes(v){deck.slides[curSlide].notes=v;}
 function setTransition(v){deck.slides[curSlide].transition=v;renderAll();toast("转场已设为："+v);}
-function setSlideWebGL(v){
-  const s=deck.slides[curSlide];
-  s.webglEffect=v;
-  renderCanvas();
-  toast(v?("已应用 WebGL 背景："+(WEBGL_EFFECTS.find(x=>x.v===v)||{}).n):"已关闭 WebGL 背景");
-}
-function setWebGLOpacity(val){
-  const s=deck.slides[curSlide];
-  s.webglOpacity=val;
-  const valEl=document.getElementById("webglOpacityVal");
-  if(valEl)valEl.textContent=Math.round(val*100)+"%";
-  const layer=document.querySelector('#canvas .webgl-bg-layer');
-  if(layer)layer.style.opacity=val;
-}
+function setSlideWebGL(v){const s=deck.slides[curSlide];s.webglEffect=v;renderCanvas();toast(v?("已应用 WebGL 背景："+(WEBGL_EFFECTS.find(x=>x.v===v)||{}).n):"已关闭 WebGL 背景");}
+function setWebGLOpacity(val){const s=deck.slides[curSlide];s.webglOpacity=val;const valEl=document.getElementById("webglOpacityVal");if(valEl)valEl.textContent=Math.round(val*100)+"%";const layer=document.querySelector('#canvas .webgl-bg-layer');if(layer)layer.style.opacity=val;}
 function setTableData(text){const rows=text.split("\n").filter(r=>r.trim()).map(r=>r.split("|").map(c=>c.trim()));const el=getElement(selectedId);if(!el)return;el.tableRows=rows.length?rows:[["列1","列2"]];renderCanvas();renderSlideList();}
 function setChartType(v){const el=getElement(selectedId);if(!el)return;el.chartConfig=el.chartConfig||{type:"bar",labels:[],series:[]};el.chartConfig.type=v;renderCanvas();}
 function setChartData(text){const lines=text.split("\n").filter(l=>l.trim());if(lines.length<2)return;const labels=lines[0].split(",").map(s=>s.trim());const series=lines.slice(1).map(l=>{const p=l.split(",").map(s=>s.trim());return{name:p[0],values:p.slice(1).map(Number)};});const el=getElement(selectedId);if(!el)return;el.chartConfig={type:(el.chartConfig||{}).type||"bar",labels:labels,series:series};renderCanvas();}
@@ -1573,10 +1633,7 @@ function openSVGEditor(elId){
   updateSVGPreview();
   document.getElementById("svgEditorModal").classList.add("show");
 }
-function updateSVGPreview(){
-  const code=document.getElementById("svgCodeInput").value;
-  document.getElementById("svgPreviewBox").innerHTML=sanitizeSVG(code);
-}
+function updateSVGPreview(){const code=document.getElementById("svgCodeInput").value;document.getElementById("svgPreviewBox").innerHTML=sanitizeSVG(code);}
 function applySVGCode(){
   const code=document.getElementById("svgCodeInput").value.trim();
   if(!code){toast("请输入 SVG 代码");return;}
@@ -1655,6 +1712,7 @@ function addElement(type){
   else if(type==="video")el={id:uid(),type:"video",x:2.5,y:1.5,w:5,h:2.8,src:"",autoplay:false,loop:false,muted:false,controls:true,isBackground:false,onEnd:"none",action:null,animation:{type:"fade",delay:0,duration:0.5}};
   else if(type==="videoBg")el={id:uid(),type:"video",x:0,y:0,w:10,h:5.625,src:"",autoplay:true,loop:true,muted:true,controls:false,isBackground:true,onEnd:"none",action:null,animation:null};
   else if(type==="svg"){editingSVGId=null;openSVGEditor();return;}
+  else if(type==="flowchart"){openFlowchartDesigner();return;}
   else if(type==="slider")el={id:uid(),type:"slider",x:6.5,y:1.5,w:3,h:1,label:"参数",varName:"var"+Object.keys(interactiveVars).length,min:0,max:200,value:100,step:1,unit:"",animation:{type:"fade",delay:0,duration:0.5}};
   else if(type==="display")el={id:uid(),type:"display",x:0.8,y:1.5,w:3,h:1.2,bindVar:"",formula:"",prefix:"",suffix:"",decimals:0,fontSize:32,color:"1A1A2E",bold:true,animation:{type:"fade",delay:0,duration:0.5}};
   if(type==="videoBg")s.elements.unshift(el);else s.elements.push(el);
@@ -1769,27 +1827,15 @@ function checkQuality(){
       if(charCount>maxChars*1.5)issues.push({slide:si+1,type:"文本可能溢出",detail:`第${si+1}页「${(el.text||"").slice(0,20)}...」`});
     });
     const titleEls=s.elements.filter(el=>el.type==="text"&&el.fontSize>=20);
-    if(titleEls.length>1){
-      const sizes=titleEls.map(e=>e.fontSize);
-      if(new Set(sizes).size>1)issues.push({slide:si+1,type:"标题字号不一致",detail:`第${si+1}页有多个标题字号：${sizes.join(", ")}`});
-    }
-    if(s.elements.filter(e=>e.type==="text").every(e=>!e.text||e.text.trim()==="")){
-      issues.push({slide:si+1,type:"页面内容为空",detail:`第${si+1}页没有有效文本`});
-    }
-    /* 逐字稿字数检查（演讲提示） */
-    if(s.notes){
-      const cc=(s.notes||"").length;
-      if(cc<60)issues.push({slide:si+1,type:"讲者备注偏短",detail:`第${si+1}页仅 ${cc} 字（建议 150-300 字）`});
-      else if(cc>500)issues.push({slide:si+1,type:"讲者备注偏长",detail:`第${si+1}页 ${cc} 字（建议 150-300 字）`});
-    }
+    if(titleEls.length>1){const sizes=titleEls.map(e=>e.fontSize);if(new Set(sizes).size>1)issues.push({slide:si+1,type:"标题字号不一致",detail:`第${si+1}页有多个标题字号：${sizes.join(", ")}`});}
+    if(s.elements.filter(e=>e.type==="text").every(e=>!e.text||e.text.trim()==="")){issues.push({slide:si+1,type:"页面内容为空",detail:`第${si+1}页没有有效文本`});}
+    if(s.notes){const cc=(s.notes||"").length;if(cc<60)issues.push({slide:si+1,type:"讲者备注偏短",detail:`第${si+1}页仅 ${cc} 字（建议 150-300 字）`});else if(cc>500)issues.push({slide:si+1,type:"讲者备注偏长",detail:`第${si+1}页 ${cc} 字（建议 150-300 字）`});}
   });
   if(issues.length===0){toast("✅ 质量检查通过");}
-  else{
-    alert("发现 "+issues.length+" 个问题：\n\n"+issues.map(q=>`• 第${q.slide}页 [${q.type}] ${q.detail}`).join("\n"));
-  }
+  else{alert("发现 "+issues.length+" 个问题：\n\n"+issues.map(q=>`• 第${q.slide}页 [${q.type}] ${q.detail}`).join("\n"));}
 }
 
-/* ========== 演示者视图（增强版） ========== */
+/* ========== 演示者视图 ========== */
 function enterPresenterMode(){
   presenterState.active=true;
   presenterState.index=curSlide;
@@ -1811,23 +1857,9 @@ function exitPresenterMode(){
   document.getElementById("presenterMode").classList.remove("show");
   if(presenterState.timer){clearInterval(presenterState.timer);presenterState.timer=null;}
 }
-function resetPresenterTimer(){
-  presenterState.globalSeconds=0;
-  presenterState.perSlideSeconds=0;
-  updatePresenterTimers();
-  toast("✅ 计时器已重置");
-}
-function fmtTime(sec){
-  const m=String(Math.floor(sec/60)).padStart(2,"0");
-  const s=String(sec%60).padStart(2,"0");
-  return m+":"+s;
-}
-/* 建议时长：按备注字数约 200 字/分钟计算，最少 45 秒 */
-function getSuggestedSeconds(notes){
-  const cc=(notes||"").length;
-  if(cc<=0)return 60;
-  return Math.max(45,Math.round((cc/200)*60));
-}
+function resetPresenterTimer(){presenterState.globalSeconds=0;presenterState.perSlideSeconds=0;updatePresenterTimers();toast("✅ 计时器已重置");}
+function fmtTime(sec){const m=String(Math.floor(sec/60)).padStart(2,"0");const s=String(sec%60).padStart(2,"0");return m+":"+s;}
+function getSuggestedSeconds(notes){const cc=(notes||"").length;if(cc<=0)return 60;return Math.max(45,Math.round((cc/200)*60));}
 function updatePresenterTimers(){
   const gt=document.getElementById("presenterTimer");
   const pt=document.getElementById("presenterPerSlideTimer");
@@ -1843,7 +1875,7 @@ function presenterNav(d){
   const newIdx=presenterState.index+d;
   if(newIdx<0||newIdx>=deck.slides.length)return;
   presenterState.index=newIdx;
-  presenterState.perSlideSeconds=0;  /* 翻页自动重置单页计时 */
+  presenterState.perSlideSeconds=0;
   renderPresenter();
   updatePresenterTimers();
 }
@@ -1852,24 +1884,16 @@ function renderPresenter(){
   const s=deck.slides[idx];if(!s)return;
   document.getElementById("presenterSlideInfo").textContent=`第 ${idx+1} 页 / 共 ${deck.slides.length} 页`;
   document.getElementById("presenterPage").textContent=`${idx+1} / ${deck.slides.length}`;
-  /* 当前页预览 */
   const curBox=document.getElementById("presenterCurrent");
   destroyWebGLBackground("presenterCur");
   curBox.innerHTML="";
   const curScale=curBox.clientWidth/PX_W;
   const curLayer=document.createElement("div");
   curLayer.style.cssText=`position:absolute;top:0;left:0;width:${PX_W}px;height:${PX_H}px;transform-origin:top left;transform:scale(${curScale})`;
-  if(s.webglEffect){
-    const bg=document.createElement("div");
-    bg.className="webgl-bg-layer";
-    bg.style.opacity=s.webglOpacity!=null?s.webglOpacity:0.35;
-    curLayer.appendChild(bg);
-    setTimeout(()=>applyWebGLBackground(bg,s.webglEffect,"presenterCur"),80);
-  }
+  if(s.webglEffect){const bg=document.createElement("div");bg.className="webgl-bg-layer";bg.style.opacity=s.webglOpacity!=null?s.webglOpacity:0.35;curLayer.appendChild(bg);setTimeout(()=>applyWebGLBackground(bg,s.webglEffect,"presenterCur"),80);}
   curLayer.appendChild(renderMasterDecorations(s));
   (s.elements||[]).forEach(el=>{try{curLayer.appendChild(buildElementNode(el,false));}catch(e){}});
   curBox.appendChild(curLayer);
-  /* 下一页预览 */
   const nextBox=document.getElementById("presenterNext");
   destroyWebGLBackground("presenterNext");
   nextBox.innerHTML="";
@@ -1878,20 +1902,13 @@ function renderPresenter(){
     const nextScale=nextBox.clientWidth/PX_W;
     const nextLayer=document.createElement("div");
     nextLayer.style.cssText=`position:absolute;top:0;left:0;width:${PX_W}px;height:${PX_H}px;transform-origin:top left;transform:scale(${nextScale})`;
-    if(ns.webglEffect){
-      const bg=document.createElement("div");
-      bg.className="webgl-bg-layer";
-      bg.style.opacity=ns.webglOpacity!=null?ns.webglOpacity:0.35;
-      nextLayer.appendChild(bg);
-      setTimeout(()=>applyWebGLBackground(bg,ns.webglEffect,"presenterNext"),80);
-    }
+    if(ns.webglEffect){const bg=document.createElement("div");bg.className="webgl-bg-layer";bg.style.opacity=ns.webglOpacity!=null?ns.webglOpacity:0.35;nextLayer.appendChild(bg);setTimeout(()=>applyWebGLBackground(bg,ns.webglEffect,"presenterNext"),80);}
     nextLayer.appendChild(renderMasterDecorations(ns));
     (ns.elements||[]).forEach(el=>{try{nextLayer.appendChild(buildElementNode(el,false));}catch(e){}});
     nextBox.appendChild(nextLayer);
   }else{
     nextBox.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:14px">已是最后一页</div>';
   }
-  /* 逐字稿 + 字数统计 + 节奏提示 */
   const notes=s.notes||"";
   const scriptEl=document.getElementById("presenterScript");
   scriptEl.textContent=notes||"（此页暂无讲者备注。建议每页 150-300 字，约 2-3 分钟/页）";
@@ -1953,14 +1970,12 @@ function resetInteractiveElements(){
   renderPresent();toast("✅ 已重置");
 }
 function renderPresent(){
-  /* 销毁旧 WebGL */
   destroyWebGLBackground("present");
   document.querySelectorAll("#presentSlide video").forEach(v=>{try{v.pause();}catch(e){}});
   const s=deck.slides[presentState.index];if(!s)return;
   const slideLayer=document.getElementById("presentSlide");
   slideLayer.innerHTML="";slideLayer.className="";
   slideLayer.style.background="#"+((s.bg||"FFFFFF"));
-  /* WebGL 背景层（最底层） */
   mountWebGLForSlide(s,slideLayer,"present");
   const trans=s.transition||"fade";
   void slideLayer.offsetWidth;
@@ -2114,6 +2129,26 @@ function buildPresentElement(el){
     const svgEl=wrap.querySelector("svg");
     if(svgEl){svgEl.style.maxWidth="100%";svgEl.style.maxHeight="100%";svgEl.style.width="100%";svgEl.style.height="100%";}
     d.appendChild(wrap);
+  }else if(el.type==="flowchart"){
+    try{
+      const svgNode=renderFlowchartForSlide(el);
+      svgNode.style.pointerEvents="auto";
+      svgNode.addEventListener("click",e=>{
+        const nodeG=e.target.closest("[data-flow-node]");
+        if(!nodeG)return;
+        const nodeId=nodeG.getAttribute("data-flow-node");
+        const flowNode=(el.nodes||[]).find(n=>n.id===nodeId);
+        if(flowNode&&flowNode.linkToSlide!=null&&flowNode.linkToSlide>=0&&flowNode.linkToSlide<deck.slides.length){
+          e.stopPropagation();
+          presentGoto(flowNode.linkToSlide);
+        }
+      });
+      d.appendChild(svgNode);
+    }catch(err){
+      const ph=document.createElement("div");
+      ph.style.cssText="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999";
+      ph.textContent="🔷 流程图";d.appendChild(ph);
+    }
   }else if(el.type==="table"){
     const wrap=document.createElement("div");wrap.style.cssText="width:100%;height:100%;overflow:hidden";
     const tb=document.createElement("table");tb.style.cssText="border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed";
@@ -2297,8 +2332,8 @@ function renderWizFileList(){
   wizMaterial=wizFiles.map(f=>"\n\n=== "+f.name+" ===\n"+f.text).join("");
 }
 function removeWizFile(i){wizFiles.splice(i,1);renderWizFileList();}
-async function parsePDF(file){
-  const buf=await file.arrayBuffer();
+async function parsePDF(){
+  const buf=await arguments[0].arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
   let out=[];
   for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const content=await page.getTextContent();out.push(content.items.map(it=>it.str).join(" "));}
@@ -2361,7 +2396,7 @@ async function generateFullContent(){
   for(let i=0;i<pages;i++){
     const outline=wizOutline.slides[i];
     setProgress(10+Math.round((i/pages)*70),"生成第 "+(i+1)+"/"+pages+" 页…");
-    const sys=`根据大纲为第${i+1}页生成详细内容。\n布局：${outline.layout||"content"}\n标题：${outline.title||""}\n摘要：${outline.summary||""}\n\n严格只输出JSON：\n{"title":"","bullets":[],"table":{"headers":[],"rows":[]},"chart":{"type":"bar","title":"","labels":[],"series":[]},"imagePrompt":"","notes":"","speakerNotes":""}\n封面/章节页只填title、imagePrompt、notes。notes 是讲者逐字稿，150-300字，口语化。`;
+    const sys=`根据大纲为第${i+1}页生成详细内容。\n布局：${outline.layout||"content"}\n标题：${outline.title||""}\n摘要：${outline.summary||""}\n\n严格只输出JSON：\n{"title":"","bullets":[],"table":{"headers":[],"rows":[]},"chart":{"type":"bar","title":"","labels":[],"series":[]},"imagePrompt":"","notes":""}\n封面/章节页只填title、imagePrompt、notes。notes 是讲者逐字稿，150-300字，口语化。`;
     try{
       const resp=await fetch(settings.apiUrl,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+settings.apiKey},body:JSON.stringify({model:settings.model,messages:[{role:"system",content:sys},{role:"user",content:wizMaterial.slice(0,6000)}],temperature:0.5})});
       if(!resp.ok)throw new Error("HTTP "+resp.status);
@@ -2378,7 +2413,6 @@ async function generateFullContent(){
     const master=layout==="title"?"COVER":layout==="section"?"SECTION":"CONTENT";
     const slideBg=master==="SECTION"?t.primary:t.bg;
     const s={id:uid(),bg:slideBg,master:master,elements:[],notes:item.notes||item.speakerNotes||"",transition:"fade",webglEffect:"",webglOpacity:0.35};
-    /* 为封面页默认加 WebGL 背景（提升视觉冲击力） */
     if(master==="COVER"&&webglAvailable){s.webglEffect="waves";s.webglOpacity=0.35;}
     if(master==="SECTION"&&webglAvailable){s.webglEffect="fog";s.webglOpacity=0.4;}
     let bullets=[];
@@ -2450,13 +2484,7 @@ function renderPreview(){
   const scale=box.clientWidth/PX_W;
   const layer=document.createElement("div");
   layer.style.cssText="position:absolute;top:0;left:0;width:"+PX_W+"px;height:"+PX_H+"px;transform-origin:top left;transform:scale("+scale+")";
-  if(s.webglEffect&&webglAvailable){
-    const bg=document.createElement("div");
-    bg.className="webgl-bg-layer";
-    bg.style.opacity=s.webglOpacity!=null?s.webglOpacity:0.35;
-    layer.appendChild(bg);
-    setTimeout(()=>applyWebGLBackground(bg,s.webglEffect,"preview"),80);
-  }
+  if(s.webglEffect&&webglAvailable){const bg=document.createElement("div");bg.className="webgl-bg-layer";bg.style.opacity=s.webglOpacity!=null?s.webglOpacity:0.35;layer.appendChild(bg);setTimeout(()=>applyWebGLBackground(bg,s.webglEffect,"preview"),80);}
   layer.appendChild(renderMasterDecorations(s));
   (s.elements||[]).forEach(el=>{try{layer.appendChild(buildElementNode(el,false));}catch(e){}});
   box.appendChild(layer);
@@ -2524,6 +2552,13 @@ async function exportPPTX(){
           }else if(el.type==="svg"){
             const svgCode=sanitizeSVG(el.svgCode||"");
             if(svgCode){const dataUrl="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(svgCode)));slide.addImage({data:dataUrl,x:el.x,y:el.y,w:el.w,h:el.h});}
+          }else if(el.type==="flowchart"){
+            try{
+              const svgNode=renderFlowchartForSlide(el);
+              const svgStr=new XMLSerializer().serializeToString(svgNode);
+              const dataUrl="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(svgStr)));
+              slide.addImage({data:dataUrl,x:el.x,y:el.y,w:el.w,h:el.h});
+            }catch(e){errorCount++;}
           }
         }catch(elErr){errorCount++;}
       }
@@ -2539,7 +2574,7 @@ async function exportPPTX(){
 function saveAsHTML(){
   try{
     const clone=document.documentElement.cloneNode(true);
-    ["slideList","canvas","propBody","emojiGrid","outlinePreview","previewBox","streamLog","wizFileList","tplResultContent","templateLibraryGrid","wizTplSelector","tocGrid","presentSlide","svgPreviewBox","svgPresetsGrid","layoutGrid","presenterCurrent","presenterNext","presenterScript"].forEach(id=>{const n=clone.querySelector("#"+id);if(n)n.innerHTML="";});
+    ["slideList","canvas","propBody","emojiGrid","outlinePreview","previewBox","streamLog","wizFileList","tplResultContent","templateLibraryGrid","wizTplSelector","tocGrid","presentSlide","svgPreviewBox","svgPresetsGrid","layoutGrid","presenterCurrent","presenterNext","presenterScript","flowCanvas","flowNodePalette","flowTplGrid","flowLaneList","flowPropBody"].forEach(id=>{const n=clone.querySelector("#"+id);if(n)n.innerHTML="";});
     clone.querySelectorAll(".modal-mask").forEach(n=>n.classList.remove("show"));
     const pm=clone.querySelector("#previewMask");if(pm)pm.classList.remove("show");
     const prm=clone.querySelector("#presentMode");if(prm)prm.classList.remove("show");
@@ -2578,7 +2613,686 @@ function loadLocal(){
 }
 setInterval(saveLocal,5000);
 
-/* ========== 启动 ========== */
+/* ==================== 流程图设计器 ==================== */
+const FLOW_NS="http://www.w3.org/2000/svg";
+const FLOW_DESIGN_W=800;
+const FLOW_DESIGN_H=500;
+
+const FLOW_NODE_TYPES={
+  start:   {name:"开始",     icon:"🟢", w:110, h:44, fill:"#DCFCE7", stroke:"#16A34A", shape:"stadium",       text:"开始"},
+  process: {name:"处理",     icon:"▭",  w:130, h:54, fill:"#DBEAFE", stroke:"#2563EB", shape:"rect",          text:"处理步骤"},
+  decision:{name:"判断",     icon:"◇",  w:130, h:86, fill:"#FEF9C3", stroke:"#CA8A04", shape:"diamond",       text:"条件?"},
+  io:      {name:"输入输出", icon:"▱",  w:130, h:54, fill:"#FCE7F3", stroke:"#DB2777", shape:"parallelogram", text:"输入数据"},
+  document:{name:"文档",     icon:"📄", w:130, h:60, fill:"#F3E8FF", stroke:"#9333EA", shape:"document",      text:"文档"},
+  circle:  {name:"连接点",   icon:"◯",  w:54,  h:54, fill:"#F1F5F9", stroke:"#64748B", shape:"circle",        text:""},
+  pageRef: {name:"跨页连接", icon:"➡️", w:140, h:54, fill:"#E0E7FF", stroke:"#4F46E5", shape:"rect",          text:"跳转到其他页"},
+  end:     {name:"结束",     icon:"🔴", w:110, h:44, fill:"#FEE2E2", stroke:"#DC2626", shape:"stadium",       text:"结束"}
+};
+
+let flowEditor={
+  nodes:[],edges:[],swimlanes:[],laneDirection:"horizontal",selected:null,linkingFrom:null,editingId:null
+};
+
+function flowShapeElement(node){
+  const {x,y,w,h,shape,fill,stroke}=node;
+  const common={fill:fill||"#FFFFFF",stroke:stroke||"#333","stroke-width":2};
+  let el;
+  if(shape==="rect"){el=document.createElementNS(FLOW_NS,"rect");applyAttrs(el,common);applyAttrs(el,{x,y,width:w,height:h,rx:8});}
+  else if(shape==="stadium"){el=document.createElementNS(FLOW_NS,"rect");applyAttrs(el,common);applyAttrs(el,{x,y,width:w,height:h,rx:h/2});}
+  else if(shape==="circle"){el=document.createElementNS(FLOW_NS,"ellipse");applyAttrs(el,common);applyAttrs(el,{cx:x+w/2,cy:y+h/2,rx:w/2,ry:h/2});}
+  else if(shape==="diamond"){el=document.createElementNS(FLOW_NS,"polygon");applyAttrs(el,common);el.setAttribute("points",`${x+w/2},${y} ${x+w},${y+h/2} ${x+w/2},${y+h} ${x},${y+h/2}`);}
+  else if(shape==="parallelogram"){el=document.createElementNS(FLOW_NS,"polygon");applyAttrs(el,common);const off=Math.min(w*0.2,h*0.5);el.setAttribute("points",`${x+off},${y} ${x+w},${y} ${x+w-off},${y+h} ${x},${y+h}`);}
+  else if(shape==="document"){el=document.createElementNS(FLOW_NS,"path");applyAttrs(el,common);const waveH=Math.min(14,h*0.25);const cy=y+h-waveH;el.setAttribute("d",`M${x},${y} L${x+w},${y} L${x+w},${cy} Q${x+w*0.75},${cy+waveH*0.9} ${x+w*0.5},${cy} Q${x+w*0.25},${cy-waveH*0.9} ${x},${cy} Z`);}
+  else{el=document.createElementNS(FLOW_NS,"rect");applyAttrs(el,common);applyAttrs(el,{x,y,width:w,height:h});}
+  return el;
+}
+function applyAttrs(el,obj){Object.entries(obj).forEach(([k,v])=>el.setAttribute(k,v));}
+
+function buildFlowNodeGroup(node,opts){
+  opts=opts||{};
+  const g=document.createElementNS(FLOW_NS,"g");
+  g.setAttribute("data-flow-node",node.id);
+  if(opts.interactive)g.style.cursor="move";
+  const shapeEl=flowShapeElement(node);
+  shapeEl.style.filter="drop-shadow(0 2px 4px rgba(0,0,0,.08))";
+  g.appendChild(shapeEl);
+  if(node.text){
+    const text=document.createElementNS(FLOW_NS,"text");
+    text.setAttribute("x",node.x+node.w/2);
+    text.setAttribute("text-anchor","middle");
+    text.setAttribute("font-size","13");
+    text.setAttribute("font-family","Inter, PingFang SC, Microsoft YaHei, sans-serif");
+    text.setAttribute("fill","#1A1A1A");
+    text.style.pointerEvents="none";
+    const lines=String(node.text).split("\n").slice(0,4);
+    const lineH=16;
+    const startY=node.y+node.h/2-(lines.length-1)*lineH/2+4;
+    lines.forEach((line,i)=>{const tspan=document.createElementNS(FLOW_NS,"tspan");tspan.setAttribute("x",node.x+node.w/2);tspan.setAttribute("y",startY+i*lineH);tspan.textContent=line;text.appendChild(tspan);});
+    g.appendChild(text);
+  }
+  return g;
+}
+function getNodeEdgePoint(node,tx,ty){
+  const cx=node.x+node.w/2,cy=node.y+node.h/2;
+  const dx=tx-cx,dy=ty-cy;
+  const len=Math.hypot(dx,dy);
+  if(len<0.001)return {x:cx,y:cy};
+  const ux=dx/len,uy=dy/len;
+  const t1=ux!==0?(node.w/2)/Math.abs(ux):Infinity;
+  const t2=uy!==0?(node.h/2)/Math.abs(uy):Infinity;
+  const t=Math.min(t1,t2);
+  return {x:cx+ux*t,y:cy+uy*t};
+}
+function buildFlowEdge(edge,nodes,markerSuffix){
+  const from=nodes.find(n=>n.id===edge.from);
+  const to=nodes.find(n=>n.id===edge.to);
+  if(!from||!to)return null;
+  const fromC={x:from.x+from.w/2,y:from.y+from.h/2};
+  const toC={x:to.x+to.w/2,y:to.y+to.h/2};
+  const p1=getNodeEdgePoint(from,toC.x,toC.y);
+  const p2=getNodeEdgePoint(to,fromC.x,fromC.y);
+  const g=document.createElementNS(FLOW_NS,"g");
+  g.setAttribute("data-flow-edge",edge.id);
+  const line=document.createElementNS(FLOW_NS,"line");
+  applyAttrs(line,{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,stroke:edge.color||"#64748B","stroke-width":edge.width||2,"stroke-linecap":"round"});
+  if(edge.dashed)line.setAttribute("stroke-dasharray","7 5");
+  if(markerSuffix!==undefined)line.setAttribute("marker-end",`url(#flowArrow-${markerSuffix})`);
+  g.appendChild(line);
+  if(edge.label){
+    const midX=(p1.x+p2.x)/2,midY=(p1.y+p2.y)/2;
+    const tw=String(edge.label).length*8+10;
+    const bg=document.createElementNS(FLOW_NS,"rect");
+    applyAttrs(bg,{x:midX-tw/2,y:midY-10,width:tw,height:18,rx:4,fill:"#FFFFFF",opacity:0.92});
+    g.appendChild(bg);
+    const text=document.createElementNS(FLOW_NS,"text");
+    applyAttrs(text,{x:midX,y:midY+3,"text-anchor":"middle","font-size":11,fill:"#475569","font-family":"Inter, PingFang SC, sans-serif"});
+    text.textContent=edge.label;
+    g.appendChild(text);
+  }
+  return g;
+}
+function renderFlowSwimlanes(svg){
+  const lanes=flowEditor.swimlanes||[];
+  if(!lanes.length)return;
+  const n=lanes.length;
+  const dir=flowEditor.laneDirection||"horizontal";
+  if(dir==="horizontal"){
+    const laneH=FLOW_DESIGN_H/n;
+    lanes.forEach((lane,i)=>{
+      const y=i*laneH;
+      const bg=document.createElementNS(FLOW_NS,"rect");
+      applyAttrs(bg,{x:0,y:y,width:FLOW_DESIGN_W,height:laneH,fill:lane.color||"#F8FAFC",opacity:0.35,"pointer-events":"none"});
+      svg.appendChild(bg);
+      const head=document.createElementNS(FLOW_NS,"rect");
+      applyAttrs(head,{x:0,y:y,width:84,height:laneH,fill:lane.color||"#E2E8F0","pointer-events":"none"});
+      svg.appendChild(head);
+      const text=document.createElementNS(FLOW_NS,"text");
+      applyAttrs(text,{x:42,y:y+laneH/2+5,"text-anchor":"middle","font-size":13,"font-weight":700,fill:"#334155","font-family":"Inter,PingFang SC,sans-serif","pointer-events":"none"});
+      text.textContent=lane.name;
+      svg.appendChild(text);
+      if(i<n-1){const line=document.createElementNS(FLOW_NS,"line");applyAttrs(line,{x1:0,y1:y+laneH,x2:FLOW_DESIGN_W,y2:y+laneH,stroke:"#94A3B8","stroke-width":1.5,"pointer-events":"none"});svg.appendChild(line);}
+    });
+  }else{
+    const laneW=FLOW_DESIGN_W/n;
+    lanes.forEach((lane,i)=>{
+      const x=i*laneW;
+      const bg=document.createElementNS(FLOW_NS,"rect");
+      applyAttrs(bg,{x:x,y:0,width:laneW,height:FLOW_DESIGN_H,fill:lane.color||"#F8FAFC",opacity:0.35,"pointer-events":"none"});
+      svg.appendChild(bg);
+      const head=document.createElementNS(FLOW_NS,"rect");
+      applyAttrs(head,{x:x,y:0,width:laneW,height:38,fill:lane.color||"#E2E8F0","pointer-events":"none"});
+      svg.appendChild(head);
+      const text=document.createElementNS(FLOW_NS,"text");
+      applyAttrs(text,{x:x+laneW/2,y:24,"text-anchor":"middle","font-size":13,"font-weight":700,fill:"#334155","font-family":"Inter,PingFang SC,sans-serif","pointer-events":"none"});
+      text.textContent=lane.name;
+      svg.appendChild(text);
+      if(i<n-1){const line=document.createElementNS(FLOW_NS,"line");applyAttrs(line,{x1:x+laneW,y1:0,x2:x+laneW,y2:FLOW_DESIGN_H,stroke:"#94A3B8","stroke-width":1.5,"pointer-events":"none"});svg.appendChild(line);}
+    });
+  }
+}
+function renderFlowCanvas(){
+  const svg=document.getElementById("flowCanvas");
+  if(!svg)return;
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const defs=document.createElementNS(FLOW_NS,"defs");
+  defs.innerHTML=`<marker id="flowArrow-designer" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748B"/></marker><marker id="flowArrow-sel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#FF6B35"/></marker><pattern id="flowGrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#F0F0F2" stroke-width="1"/></pattern>`;
+  svg.appendChild(defs);
+  const bg=document.createElementNS(FLOW_NS,"rect");
+  applyAttrs(bg,{width:FLOW_DESIGN_W,height:FLOW_DESIGN_H,fill:"url(#flowGrid)"});
+  svg.appendChild(bg);
+  renderFlowSwimlanes(svg);
+  flowEditor.edges.forEach(edge=>{
+    const isSel=flowEditor.selected&&flowEditor.selected.type==="edge"&&flowEditor.selected.id===edge.id;
+    const g=buildFlowEdge(edge,flowEditor.nodes,isSel?"sel":"designer");
+    if(g){const line=g.querySelector("line");if(isSel){line.setAttribute("stroke","#FF6B35");line.setAttribute("stroke-width",3);}svg.appendChild(g);}
+  });
+  flowEditor.nodes.forEach(node=>{
+    const isSel=flowEditor.selected&&flowEditor.selected.type==="node"&&flowEditor.selected.id===node.id;
+    const isLinkSrc=flowEditor.linkingFrom===node.id;
+    const g=buildFlowNodeGroup(node,{interactive:true});
+    if(isSel||isLinkSrc){const shape=g.querySelector("rect, ellipse, polygon, path");if(shape){shape.setAttribute("stroke","#FF6B35");shape.setAttribute("stroke-width",3);}}
+    if(isLinkSrc)g.style.opacity="0.7";
+    svg.appendChild(g);
+  });
+  const statusEl=document.getElementById("flowStatusInfo");
+  if(statusEl){const laneInfo=flowEditor.swimlanes.length?` · ${flowEditor.swimlanes.length} 条泳道`:"";statusEl.textContent=`${flowEditor.nodes.length} 个节点 · ${flowEditor.edges.length} 条连线${laneInfo}`;}
+  const hint=document.getElementById("flowEmptyHint");
+  if(hint)hint.style.display=flowEditor.nodes.length===0?"flex":"none";
+  renderFlowLaneList();
+}
+function renderFlowLaneList(){
+  const box=document.getElementById("flowLaneList");
+  if(!box)return;
+  if(!flowEditor.swimlanes.length){box.innerHTML=`<div class="flow-lane-empty">暂无泳道<br>添加后可将不同角色/部门分栏</div>`;}
+  else{box.innerHTML=flowEditor.swimlanes.map((lane,i)=>`<div class="flow-lane-item"><span class="lane-color" style="background:${lane.color}"></span><span class="lane-name" title="${esc(lane.name)}">${esc(lane.name)}</span><button class="lane-del" onclick="flowRemoveSwimlane(${i})" title="删除">×</button></div>`).join("");}
+  const hBtn=document.getElementById("flowDirH"),vBtn=document.getElementById("flowDirV");
+  if(hBtn&&vBtn){const isH=(flowEditor.laneDirection||"horizontal")==="horizontal";hBtn.classList.toggle("primary",isH);vBtn.classList.toggle("primary",!isH);}
+}
+function flowAddSwimlane(){
+  const name=prompt("请输入泳道名称：","角色"+(flowEditor.swimlanes.length+1));
+  if(!name)return;
+  const colors=["#DBEAFE","#FCE7F3","#DCFCE7","#FEF9C3","#F3E8FF","#FED7AA","#CFFAFE","#E9D5FF"];
+  flowEditor.swimlanes.push({id:"lane_"+uid(),name:name.slice(0,12),color:colors[flowEditor.swimlanes.length%colors.length]});
+  renderFlowCanvas();
+}
+function flowRemoveSwimlane(idx){
+  flowEditor.swimlanes.splice(idx,1);
+  flowEditor.nodes.forEach(n=>{if(n.laneId&&!flowEditor.swimlanes.find(l=>l.id===n.laneId))n.laneId=null;});
+  renderFlowCanvas();
+}
+function flowSetLaneDir(dir){flowEditor.laneDirection=dir;renderFlowCanvas();}
+
+function renderFlowProps(){
+  const box=document.getElementById("flowPropBody");
+  if(!box)return;
+  if(!flowEditor.selected){
+    box.innerHTML=`<div class="flow-props-empty">点击画布中的节点或连线<br>可编辑其属性<br><br><span style="font-size:11px">提示：拖动节点可移动位置<br>按住 Alt 点击可快速复制节点<br>跨页连接节点可在演示时跳转</span></div>`;
+    return;
+  }
+  if(flowEditor.selected.type==="node"){
+    const node=flowEditor.nodes.find(n=>n.id===flowEditor.selected.id);
+    if(!node){box.innerHTML="";return;}
+    const isPageRef=node.type==="pageRef";
+    let laneOpts="";
+    if(flowEditor.swimlanes.length){
+      laneOpts=`<div class="field"><label>所属泳道</label><select onchange="flowUpdateNode('laneId', this.value || null)"><option value="">（无）</option>${flowEditor.swimlanes.map(l=>`<option value="${l.id}" ${node.laneId===l.id?'selected':''}>${esc(l.name)}</option>`).join("")}</select></div>`;
+    }
+    let pageRefOpts="";
+    if(isPageRef){
+      pageRefOpts=`<div class="section-title brand" style="margin-top:12px">➡️ 跨页连接</div><div class="field"><label>目标幻灯片</label><select onchange="flowUpdateNode('linkToSlide', this.value === '' ? null : +this.value)"><option value="">（未设置）</option>${deck.slides.map((s,i)=>{const title=(s.elements||[]).find(x=>x.type==="text")?.text||"";return `<option value="${i}" ${node.linkToSlide===i?'selected':''}>第 ${i+1} 页${title?" · "+esc(String(title).slice(0,12)):""}</option>`;}).join("")}</select></div><div class="hint">演示模式下点击此节点会跳转到目标幻灯片</div>`;
+    }
+    box.innerHTML=`<div class="field"><label>节点类型</label><div style="font-size:12.5px;font-weight:600;padding:6px 0">${(FLOW_NODE_TYPES[node.type]||{}).name||node.type}</div></div>
+      <div class="field"><label>文本</label><textarea id="flowNodeText" style="min-height:60px" oninput="flowUpdateNode('text', this.value)">${esc(node.text||"")}</textarea></div>
+      ${laneOpts}
+      <div class="field"><label>填充颜色</label><input type="color" value="${node.fill||'#FFFFFF'}" oninput="flowUpdateNode('fill', this.value)"/></div>
+      <div class="field"><label>边框颜色</label><input type="color" value="${node.stroke||'#333333'}" oninput="flowUpdateNode('stroke', this.value)"/></div>
+      <div class="row2"><div class="field"><label>宽</label><input type="number" value="${node.w}" oninput="flowUpdateNode('w', +this.value)"/></div><div class="field"><label>高</label><input type="number" value="${node.h}" oninput="flowUpdateNode('h', +this.value)"/></div></div>
+      <div class="row2"><div class="field"><label>X</label><input type="number" value="${node.x}" oninput="flowUpdateNode('x', +this.value)"/></div><div class="field"><label>Y</label><input type="number" value="${node.y}" oninput="flowUpdateNode('y', +this.value)"/></div></div>
+      ${pageRefOpts}
+      <button class="btn sm" style="width:100%;justify-content:center;margin-top:8px" onclick="flowDuplicateSelected()">⧉ 复制节点</button>
+      <button class="btn sm" style="width:100%;justify-content:center;margin-top:8px;color:var(--danger);border-color:rgba(220,38,38,.3)" onclick="flowDeleteSelected()">🗑 删除节点</button>`;
+  }else{
+    const edge=flowEditor.edges.find(e=>e.id===flowEditor.selected.id);
+    if(!edge){box.innerHTML="";return;}
+    const fromNode=flowEditor.nodes.find(n=>n.id===edge.from);
+    const toNode=flowEditor.nodes.find(n=>n.id===edge.to);
+    box.innerHTML=`<div class="field"><label>连接</label><div style="font-size:12px;color:var(--text-2);padding:6px 0">${esc((fromNode&&fromNode.text)||"起点")} → ${esc((toNode&&toNode.text)||"终点")}</div></div>
+      <div class="field"><label>标签文本</label><input type="text" value="${esc(edge.label||'')}" oninput="flowUpdateEdge('label', this.value)" placeholder="如：是 / 否"/></div>
+      <div class="field"><label>线条颜色</label><input type="color" value="${edge.color||'#64748B'}" oninput="flowUpdateEdge('color', this.value)"/></div>
+      <div class="field"><label>线宽</label><input type="number" min="1" max="8" value="${edge.width||2}" oninput="flowUpdateEdge('width', +this.value)"/></div>
+      <label class="chk"><input type="checkbox" ${edge.dashed?'checked':''} onchange="flowUpdateEdge('dashed', this.checked)"/>虚线</label>
+      <button class="btn sm" style="width:100%;justify-content:center;margin-top:14px;color:var(--danger);border-color:rgba(220,38,38,.3)" onclick="flowDeleteSelected()">🗑 删除连线</button>`;
+  }
+}
+function flowAddNode(typeKey){
+  const tpl=FLOW_NODE_TYPES[typeKey];if(!tpl)return;
+  const count=flowEditor.nodes.length;
+  const offset=(count%5)*22;
+  const node={id:"fn_"+uid(),type:typeKey,x:100+offset,y:60+offset,w:tpl.w,h:tpl.h,text:tpl.text,fill:tpl.fill,stroke:tpl.stroke,shape:tpl.shape};
+  flowEditor.nodes.push(node);
+  flowEditor.selected={type:"node",id:node.id};
+  renderFlowCanvas();renderFlowProps();
+}
+function flowUpdateNode(k,v){if(!flowEditor.selected||flowEditor.selected.type!=="node")return;const node=flowEditor.nodes.find(n=>n.id===flowEditor.selected.id);if(!node)return;node[k]=v;renderFlowCanvas();}
+function flowUpdateEdge(k,v){if(!flowEditor.selected||flowEditor.selected.type!=="edge")return;const edge=flowEditor.edges.find(e=>e.id===flowEditor.selected.id);if(!edge)return;edge[k]=v;renderFlowCanvas();}
+function flowDeleteSelected(){
+  if(!flowEditor.selected){toast("请先选中节点或连线");return;}
+  if(flowEditor.selected.type==="node"){const id=flowEditor.selected.id;flowEditor.nodes=flowEditor.nodes.filter(n=>n.id!==id);flowEditor.edges=flowEditor.edges.filter(e=>e.from!==id&&e.to!==id);}
+  else{flowEditor.edges=flowEditor.edges.filter(e=>e.id!==flowEditor.selected.id);}
+  flowEditor.selected=null;renderFlowCanvas();renderFlowProps();
+}
+function flowDuplicateSelected(){
+  if(!flowEditor.selected||flowEditor.selected.type!=="node")return;
+  const node=flowEditor.nodes.find(n=>n.id===flowEditor.selected.id);
+  if(!node)return;
+  const copy=JSON.parse(JSON.stringify(node));
+  copy.id="fn_"+uid();copy.x+=20;copy.y+=20;
+  flowEditor.nodes.push(copy);
+  flowEditor.selected={type:"node",id:copy.id};
+  renderFlowCanvas();renderFlowProps();
+}
+function flowCreateEdge(fromId,toId){
+  if(flowEditor.edges.some(e=>e.from===fromId&&e.to===toId)){toast("已存在相同连线");return;}
+  flowEditor.edges.push({id:"fe_"+uid(),from:fromId,to:toId,label:"",color:"#64748B",width:2,dashed:false});
+}
+function svgPoint(svg,clientX,clientY){
+  const rect=svg.getBoundingClientRect();
+  const vb=svg.viewBox.baseVal;
+  return {x:(clientX-rect.left)/rect.width*vb.width+vb.x,y:(clientY-rect.top)/rect.height*vb.height+vb.y};
+}
+function bindFlowCanvasEvents(){
+  const svg=document.getElementById("flowCanvas");
+  if(!svg||svg.dataset.bound==="1")return;
+  svg.dataset.bound="1";
+  svg.addEventListener("pointerdown",e=>{
+    const nodeG=e.target.closest("[data-flow-node]");
+    const edgeG=e.target.closest("[data-flow-edge]");
+    if(nodeG){
+      const nodeId=nodeG.getAttribute("data-flow-node");
+      if(e.altKey){
+        const node=flowEditor.nodes.find(n=>n.id===nodeId);
+        if(node){const copy=JSON.parse(JSON.stringify(node));copy.id="fn_"+uid();copy.x+=30;copy.y+=30;flowEditor.nodes.push(copy);flowEditor.selected={type:"node",id:copy.id};renderFlowCanvas();renderFlowProps();}
+        return;
+      }
+      if(flowEditor.linkingFrom){
+        if(flowEditor.linkingFrom!==nodeId){flowCreateEdge(flowEditor.linkingFrom,nodeId);flowEditor.linkingFrom=null;document.getElementById("flowModeBadge").classList.remove("show");const btn=document.getElementById("flowLinkBtn");if(btn)btn.classList.remove("primary");renderFlowCanvas();renderFlowProps();}
+        return;
+      }
+      flowEditor.selected={type:"node",id:nodeId};
+      renderFlowCanvas();renderFlowProps();
+      startFlowNodeDrag(e,nodeId);
+      return;
+    }
+    if(edgeG){
+      flowEditor.selected={type:"edge",id:edgeG.getAttribute("data-flow-edge")};
+      renderFlowCanvas();renderFlowProps();
+      return;
+    }
+    flowEditor.selected=null;flowEditor.linkingFrom=null;
+    document.getElementById("flowModeBadge").classList.remove("show");
+    const btn=document.getElementById("flowLinkBtn");if(btn)btn.classList.remove("primary");
+    renderFlowCanvas();renderFlowProps();
+  });
+}
+function startFlowNodeDrag(e,nodeId){
+  const node=flowEditor.nodes.find(n=>n.id===nodeId);
+  if(!node)return;
+  const svg=document.getElementById("flowCanvas");
+  const startPt=svgPoint(svg,e.clientX,e.clientY);
+  const startX=node.x,startY=node.y;
+  const move=ev=>{
+    const pt=svgPoint(svg,ev.clientX,ev.clientY);
+    node.x=Math.round((startX+pt.x-startPt.x)/10)*10;
+    node.y=Math.round((startY+pt.y-startPt.y)/10)*10;
+    node.x=Math.max(0,Math.min(FLOW_DESIGN_W-node.w,node.x));
+    node.y=Math.max(0,Math.min(FLOW_DESIGN_H-node.h,node.y));
+    if(flowEditor.swimlanes.length){
+      const cx=node.x+node.w/2,cy=node.y+node.h/2;
+      if((flowEditor.laneDirection||"horizontal")==="horizontal"){
+        const laneH=FLOW_DESIGN_H/flowEditor.swimlanes.length;
+        const idx=Math.max(0,Math.min(flowEditor.swimlanes.length-1,Math.floor(cy/laneH)));
+        node.laneId=flowEditor.swimlanes[idx].id;
+      }else{
+        const laneW=FLOW_DESIGN_W/flowEditor.swimlanes.length;
+        const idx=Math.max(0,Math.min(flowEditor.swimlanes.length-1,Math.floor(cx/laneW)));
+        node.laneId=flowEditor.swimlanes[idx].id;
+      }
+    }
+    renderFlowCanvas();
+  };
+  const up=()=>{document.removeEventListener("pointermove",move);document.removeEventListener("pointerup",up);renderFlowProps();};
+  document.addEventListener("pointermove",move);document.addEventListener("pointerup",up);
+}
+function flowToggleLinkMode(){
+  if(flowEditor.linkingFrom){
+    flowEditor.linkingFrom=null;
+    document.getElementById("flowModeBadge").classList.remove("show");
+    document.getElementById("flowLinkBtn").classList.remove("primary");
+  }else{
+    if(flowEditor.selected&&flowEditor.selected.type==="node")flowEditor.linkingFrom=flowEditor.selected.id;
+    else flowEditor.linkingFrom="__pending__";
+    document.getElementById("flowModeBadge").classList.add("show");
+    document.getElementById("flowLinkBtn").classList.add("primary");
+  }
+  renderFlowCanvas();
+}
+function flowClearAll(){
+  if(flowEditor.nodes.length===0)return;
+  if(!confirm("清空所有节点与连线？"))return;
+  flowEditor.nodes=[];flowEditor.edges=[];flowEditor.selected=null;flowEditor.linkingFrom=null;
+  renderFlowCanvas();renderFlowProps();
+}
+function flowAutoLayout(){
+  if(flowEditor.nodes.length===0)return;
+  if(flowEditor.swimlanes.length){flowLayoutWithSwimlanes();renderFlowCanvas();toast("✅ 已按泳道排列");return;}
+  const nodes=flowEditor.nodes;
+  const indeg={};
+  nodes.forEach(n=>indeg[n.id]=0);
+  flowEditor.edges.forEach(e=>{if(indeg[e.to]!==undefined)indeg[e.to]++;});
+  const layers=[];const visited=new Set();
+  let current=nodes.filter(n=>indeg[n.id]===0);
+  if(current.length===0)current=[nodes[0]];
+  while(current.length){
+    layers.push(current);
+    current.forEach(n=>visited.add(n.id));
+    const next=[];
+    current.forEach(n=>{flowEditor.edges.forEach(e=>{if(e.from===n.id){const t=nodes.find(x=>x.id===e.to);if(t&&!visited.has(t.id)&&!next.includes(t))next.push(t);}});});
+    current=next.filter(n=>!visited.has(n.id));
+    if(layers.length>10)break;
+  }
+  const leftover=nodes.filter(n=>!visited.has(n.id));
+  if(leftover.length)layers.push(leftover);
+  const layerGap=100,startY=50;
+  layers.forEach((layer,li)=>{
+    const totalW=layer.reduce((s,n)=>s+n.w,0)+(layer.length-1)*30;
+    let cx=Math.max(40,(FLOW_DESIGN_W-totalW)/2);
+    const y=startY+li*layerGap;
+    layer.forEach(n=>{n.x=Math.round(cx);n.y=y;cx+=n.w+30;});
+  });
+  renderFlowCanvas();
+  toast("✅ 已自动排列");
+}
+function flowResetView(){const svg=document.getElementById("flowCanvas");if(svg)svg.setAttribute("viewBox",`0 0 ${FLOW_DESIGN_W} ${FLOW_DESIGN_H}`);}
+
+const FLOW_TEMPLATES=[
+  {name:"基础流程",icon:"📋",build:()=>[
+    {type:"start",x:330,y:20,text:"开始"},
+    {type:"process",x:320,y:110,text:"步骤一"},
+    {type:"process",x:320,y:200,text:"步骤二"},
+    {type:"end",x:330,y:290,text:"结束"}
+  ],links:"chain"},
+  {name:"条件判断",icon:"🔀",build:()=>[
+    {type:"start",x:330,y:20,text:"开始"},
+    {type:"process",x:320,y:110,text:"准备数据"},
+    {type:"decision",x:320,y:200,text:"通过?"},
+    {type:"process",x:520,y:215,text:"成功处理"},
+    {type:"process",x:120,y:215,text:"失败重试"},
+    {type:"end",x:330,y:340,text:"结束"}
+  ],links:"branch"},
+  {name:"循环流程",icon:"🔁",build:()=>[
+    {type:"start",x:330,y:20,text:"开始"},
+    {type:"process",x:320,y:110,text:"初始化"},
+    {type:"decision",x:320,y:200,text:"满足条件?"},
+    {type:"process",x:530,y:215,text:"执行任务"},
+    {type:"end",x:330,y:340,text:"结束"}
+  ],links:"loop"},
+  {name:"文档审核",icon:"📄",build:()=>[
+    {type:"start",x:330,y:20,text:"提交申请"},
+    {type:"document",x:320,y:100,text:"审核材料"},
+    {type:"decision",x:320,y:200,text:"审核通过?"},
+    {type:"process",x:530,y:215,text:"归档"},
+    {type:"process",x:120,y:215,text:"退回修改"},
+    {type:"end",x:330,y:340,text:"完成"}
+  ],links:"branch"}
+];
+function renderFlowTemplates(){
+  const grid=document.getElementById("flowTplGrid");
+  if(!grid)return;
+  grid.innerHTML=FLOW_TEMPLATES.map((t,i)=>`<div class="flow-tpl-card" onclick="flowLoadTemplate(${i})"><span class="ft-icon">${t.icon}</span>${t.name}</div>`).join("");
+}
+function flowLoadTemplate(idx){
+  const tpl=FLOW_TEMPLATES[idx];if(!tpl)return;
+  if(flowEditor.nodes.length&&!confirm("将覆盖当前流程图，继续？"))return;
+  flowEditor.nodes=[];flowEditor.edges=[];flowEditor.selected=null;flowEditor.linkingFrom=null;
+  const built=tpl.build();
+  built.forEach(n=>{
+    const t=FLOW_NODE_TYPES[n.type];
+    flowEditor.nodes.push({id:"fn_"+uid(),type:n.type,x:n.x,y:n.y,w:t.w,h:t.h,text:n.text||t.text,fill:t.fill,stroke:t.stroke,shape:t.shape});
+  });
+  const byText=t=>flowEditor.nodes.find(n=>n.text===t);
+  const link=(a,b,label)=>{const A=byText(a),B=byText(b);if(A&&B)flowEditor.edges.push({id:"fe_"+uid(),from:A.id,to:B.id,label:label||"",color:"#64748B",width:2,dashed:false});};
+  if(tpl.links==="chain"){link("开始","步骤一");link("步骤一","步骤二");link("步骤二","结束");}
+  else if(tpl.links==="branch"){link("开始","准备数据");link("准备数据","通过?");link("通过?","成功处理","是");link("通过?","失败重试","否");link("成功处理","结束");link("失败重试","结束");}
+  else if(tpl.links==="loop"){link("开始","初始化");link("初始化","满足条件?");link("满足条件?","执行任务","是");link("执行任务","满足条件?");link("满足条件?","结束","否");}
+  renderFlowCanvas();renderFlowProps();toast("✅ 已载入："+tpl.name);
+}
+function renderFlowPalette(){
+  const box=document.getElementById("flowNodePalette");
+  if(!box)return;
+  box.innerHTML=Object.entries(FLOW_NODE_TYPES).map(([k,t])=>`<button class="flow-palette-btn" onclick="flowAddNode('${k}')"><span class="fp-ico">${t.icon}</span><span>${t.name}</span></button>`).join("");
+}
+function openFlowchartDesigner(editId){
+  flowEditor.nodes=[];flowEditor.edges=[];flowEditor.swimlanes=[];flowEditor.laneDirection="horizontal";
+  flowEditor.selected=null;flowEditor.linkingFrom=null;flowEditor.editingId=editId||null;
+  if(editId){
+    const el=getElement(editId);
+    if(el&&el.type==="flowchart"){
+      flowEditor.nodes=JSON.parse(JSON.stringify(el.nodes||[]));
+      flowEditor.edges=JSON.parse(JSON.stringify(el.edges||[]));
+      flowEditor.swimlanes=JSON.parse(JSON.stringify(el.swimlanes||[]));
+      flowEditor.laneDirection=el.laneDirection||"horizontal";
+    }
+  }
+  renderFlowPalette();renderFlowTemplates();renderFlowLaneList();
+  if(flowEditor.nodes.length===0&&!editId)setTimeout(()=>flowLoadTemplate(0),60);
+  else{renderFlowCanvas();renderFlowProps();}
+  document.getElementById("flowLinkBtn").classList.remove("primary");
+  document.getElementById("flowModeBadge").classList.remove("show");
+  document.getElementById("flowchartModal").classList.add("show");
+  bindFlowCanvasEvents();
+}
+function closeFlowchartDesigner(){closeModal("flowchartModal");}
+function insertFlowchart(){
+  if(flowEditor.nodes.length===0){toast("请先添加至少一个节点");return;}
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  flowEditor.nodes.forEach(n=>{minX=Math.min(minX,n.x);minY=Math.min(minY,n.y);maxX=Math.max(maxX,n.x+n.w);maxY=Math.max(maxY,n.y+n.h);});
+  const padding=30;
+  const designW=Math.max(maxX-minX+padding*2,200);
+  const designH=Math.max(maxY-minY+padding*2,200);
+  const normNodes=flowEditor.nodes.map(n=>({...n,x:n.x-minX+padding,y:n.y-minY+padding}));
+  const maxW=8.2,maxH=4.5;
+  const aspect=designW/designH;
+  let w=maxW,h=maxW/aspect;
+  if(h>maxH){h=maxH;w=maxH*aspect;}
+  const el={id:uid(),type:"flowchart",x:(SLIDE_W-w)/2,y:(SLIDE_H-h)/2,w:w,h:h,nodes:normNodes,edges:JSON.parse(JSON.stringify(flowEditor.edges)),swimlanes:JSON.parse(JSON.stringify(flowEditor.swimlanes)),laneDirection:flowEditor.laneDirection,designW:designW,designH:designH,action:null,animation:{type:"fade",delay:0,duration:0.5}};
+  const s=deck.slides[curSlide];
+  if(flowEditor.editingId){
+    const idx=s.elements.findIndex(e=>e.id===flowEditor.editingId);
+    if(idx>=0){el.id=flowEditor.editingId;s.elements[idx]=el;}
+    else s.elements.push(el);
+  }else s.elements.push(el);
+  selectedId=el.id;
+  renderAll();
+  closeModal("flowchartModal");
+  toast(flowEditor.editingId?"✅ 流程图已更新":"✅ 流程图已插入");
+}
+function renderFlowchartForSlide(flowEl){
+  const svg=document.createElementNS(FLOW_NS,"svg");
+  svg.setAttribute("viewBox",`0 0 ${flowEl.designW} ${flowEl.designH}`);
+  svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+  svg.style.cssText="width:100%;height:100%;display:block;overflow:visible";
+  const defs=document.createElementNS(FLOW_NS,"defs");
+  const mid=flowEl.id;
+  defs.innerHTML=`<marker id="flowArrow-${mid}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748B"/></marker>`;
+  svg.appendChild(defs);
+  const lanes=flowEl.swimlanes||[];
+  if(lanes.length){
+    const n=lanes.length;
+    const dir=flowEl.laneDirection||"horizontal";
+    if(dir==="horizontal"){
+      const laneH=flowEl.designH/n;
+      lanes.forEach((lane,i)=>{
+        const y=i*laneH;
+        const bg=document.createElementNS(FLOW_NS,"rect");applyAttrs(bg,{x:0,y:y,width:flowEl.designW,height:laneH,fill:lane.color||"#F8FAFC",opacity:0.3});svg.appendChild(bg);
+        const head=document.createElementNS(FLOW_NS,"rect");applyAttrs(head,{x:0,y:y,width:84,height:laneH,fill:lane.color||"#E2E8F0"});svg.appendChild(head);
+        const text=document.createElementNS(FLOW_NS,"text");applyAttrs(text,{x:42,y:y+laneH/2+5,"text-anchor":"middle","font-size":13,"font-weight":700,fill:"#334155","font-family":"Inter,PingFang SC,sans-serif"});text.textContent=lane.name;svg.appendChild(text);
+        if(i<n-1){const line=document.createElementNS(FLOW_NS,"line");applyAttrs(line,{x1:0,y1:y+laneH,x2:flowEl.designW,y2:y+laneH,stroke:"#94A3B8","stroke-width":1.5});svg.appendChild(line);}
+      });
+    }else{
+      const laneW=flowEl.designW/n;
+      lanes.forEach((lane,i)=>{
+        const x=i*laneW;
+        const bg=document.createElementNS(FLOW_NS,"rect");applyAttrs(bg,{x:x,y:0,width:laneW,height:flowEl.designH,fill:lane.color||"#F8FAFC",opacity:0.3});svg.appendChild(bg);
+        const head=document.createElementNS(FLOW_NS,"rect");applyAttrs(head,{x:x,y:0,width:laneW,height:38,fill:lane.color||"#E2E8F0"});svg.appendChild(head);
+        const text=document.createElementNS(FLOW_NS,"text");applyAttrs(text,{x:x+laneW/2,y:24,"text-anchor":"middle","font-size":13,"font-weight":700,fill:"#334155","font-family":"Inter,PingFang SC,sans-serif"});text.textContent=lane.name;svg.appendChild(text);
+        if(i<n-1){const line=document.createElementNS(FLOW_NS,"line");applyAttrs(line,{x1:x+laneW,y1:0,x2:x+laneW,y2:flowEl.designH,stroke:"#94A3B8","stroke-width":1.5});svg.appendChild(line);}
+      });
+    }
+  }
+  (flowEl.edges||[]).forEach(edge=>{const g=buildFlowEdge(edge,flowEl.nodes||[],mid);if(g)svg.appendChild(g);});
+  (flowEl.nodes||[]).forEach(node=>{
+    const g=buildFlowNodeGroup(node,{interactive:false});
+    if(node.type==="pageRef"&&node.linkToSlide!=null){
+      const badge=document.createElementNS(FLOW_NS,"text");
+      applyAttrs(badge,{x:node.x+node.w-8,y:node.y+16,"text-anchor":"end","font-size":11,"font-weight":700,fill:"#4F46E5"});
+      badge.textContent="P"+(node.linkToSlide+1);
+      g.appendChild(badge);
+    }
+    svg.appendChild(g);
+  });
+  return svg;
+}
+
+/* ==================== AI 生成流程图 ==================== */
+function openFlowAIModal(){
+  const el=document.getElementById("flowAIModal");
+  if(!el)return;
+  el.classList.add("show");
+  document.getElementById("flowAIPrompt").value="";
+  document.getElementById("flowAIStatus").textContent="";
+  const btn=document.getElementById("flowAIBtn");
+  btn.disabled=false;btn.textContent="✨ 生成流程图";
+}
+async function flowAIGenerate(){
+  const desc=document.getElementById("flowAIPrompt").value.trim();
+  if(desc.length<10){toast("请描述得更详细一些（至少 10 字）");return;}
+  const settings=getSettings();
+  if(!settings.apiKey){toast("请先配置 API Key");openSettings();return;}
+  const layoutPref=document.getElementById("flowAILayout").value;
+  const btn=document.getElementById("flowAIBtn");
+  const status=document.getElementById("flowAIStatus");
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> 生成中…';
+  status.textContent="AI 正在分析流程…";
+  const laneHint=layoutPref==="swimlane"?"请使用 lanes 字段输出泳道（如角色/部门），每个节点用 lane 字段指定归属泳道。":"不要输出 lanes 字段。";
+  try{
+    const sys=`你是流程图设计助手。根据用户描述生成流程图结构，严格只输出 JSON，不要任何解释。
+格式：
+{
+  "nodes": [
+    {"id":"n1","type":"start|process|decision|io|document|end","text":"节点文本","lane":"泳道名（可选）"}
+  ],
+  "edges": [
+    {"from":"n1","to":"n2","label":"标签（可选）"}
+  ],
+  "lanes": ["泳道1","泳道2"]
+}
+规则：
+1. 必须有且仅有一个 start 节点、一个 end 节点
+2. 判断分支用 decision 节点，出边必须有 "是"/"否" 等标签
+3. 节点文本尽量简短（不超过 12 字）
+4. 节点 id 用 n1,n2,n3... 命名
+5. ${laneHint}
+6. 只输出 JSON`;
+    const resp=await fetch(settings.apiUrl,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+settings.apiKey},body:JSON.stringify({model:settings.model,messages:[{role:"system",content:sys},{role:"user",content:desc}],temperature:0.4})});
+    if(!resp.ok)throw new Error("HTTP "+resp.status);
+    const data=await resp.json();
+    const content=data.choices&&data.choices[0]&&data.choices[0].message?data.choices[0].message.content:"";
+    const json=extractJSON(content);
+    if(!json||!json.nodes||!json.nodes.length)throw new Error("AI 返回格式错误");
+    status.textContent="正在布局…";
+    applyAIFlowchart(json,layoutPref);
+    closeModal("flowAIModal");
+    toast("✅ 已生成流程图");
+  }catch(err){status.textContent="❌ "+err.message;toast("生成失败："+err.message,5000);}
+  finally{btn.disabled=false;btn.textContent="✨ 生成流程图";}
+}
+function applyAIFlowchart(json,layoutPref){
+  flowEditor.nodes=[];flowEditor.edges=[];flowEditor.swimlanes=[];
+  flowEditor.laneDirection=layoutPref==="horizontal"?"vertical":"horizontal";
+  flowEditor.selected=null;flowEditor.linkingFrom=null;
+  const lanes=json.lanes||[];
+  const laneColors=["#DBEAFE","#FCE7F3","#DCFCE7","#FEF9C3","#F3E8FF","#FED7AA","#CFFAFE","#E9D5FF"];
+  const laneMap={};
+  lanes.forEach((name,i)=>{const lane={id:"lane_"+uid(),name:name,color:laneColors[i%laneColors.length]};flowEditor.swimlanes.push(lane);laneMap[name]=lane.id;});
+  const idMap={};
+  (json.nodes||[]).forEach((rn,idx)=>{
+    const type=FLOW_NODE_TYPES[rn.type]?rn.type:"process";
+    const tpl=FLOW_NODE_TYPES[type];
+    const node={id:"fn_"+uid(),type:type,x:0,y:0,w:tpl.w,h:tpl.h,text:rn.text||tpl.text,fill:tpl.fill,stroke:tpl.stroke,shape:tpl.shape,laneId:rn.lane&&laneMap[rn.lane]?laneMap[rn.lane]:(flowEditor.swimlanes[idx%flowEditor.swimlanes.length]?.id||null),linkToSlide:null};
+    flowEditor.nodes.push(node);
+    idMap[rn.id||("n"+(idx+1))]=node.id;
+  });
+  (json.edges||[]).forEach(re=>{
+    const from=idMap[re.from],to=idMap[re.to];
+    if(!from||!to)return;
+    flowEditor.edges.push({id:"fe_"+uid(),from:from,to:to,label:re.label||"",color:"#64748B",width:2,dashed:false});
+  });
+  if(layoutPref==="swimlane"&&flowEditor.swimlanes.length)flowLayoutWithSwimlanes();
+  else if(layoutPref==="horizontal")flowLayoutHorizontal();
+  else flowLayoutVertical();
+  renderFlowCanvas();renderFlowProps();
+}
+function flowLayoutVertical(){
+  const nodes=flowEditor.nodes,edges=flowEditor.edges;
+  const indeg={};nodes.forEach(n=>indeg[n.id]=0);
+  edges.forEach(e=>{if(indeg[e.to]!==undefined)indeg[e.to]++;});
+  const depth={};
+  const queue=nodes.filter(n=>indeg[n.id]===0);
+  if(!queue.length&&nodes.length)queue.push(nodes[0]);
+  queue.forEach(n=>depth[n.id]=0);
+  const visited=new Set();let i=0;
+  while(i<queue.length){
+    const n=queue[i++];if(visited.has(n.id))continue;visited.add(n.id);
+    edges.filter(e=>e.from===n.id).forEach(e=>{const t=nodes.find(x=>x.id===e.to);if(t){depth[t.id]=Math.max(depth[t.id]||0,(depth[n.id]||0)+1);if(!visited.has(t.id))queue.push(t);}});
+  }
+  let maxDepth=0;Object.values(depth).forEach(d=>{if(d>maxDepth)maxDepth=d;});
+  nodes.forEach(n=>{if(depth[n.id]===undefined)depth[n.id]=maxDepth+1;});
+  const layers={};nodes.forEach(n=>{const d=depth[n.id];if(!layers[d])layers[d]=[];layers[d].push(n);});
+  const layerGap=100,startY=40;
+  Object.keys(layers).sort((a,b)=>+a-+b).forEach(d=>{
+    const layer=layers[d];
+    const totalW=layer.reduce((s,n)=>s+n.w,0)+(layer.length-1)*40;
+    let cx=Math.max(20,(FLOW_DESIGN_W-totalW)/2);
+    const y=startY+(+d)*layerGap;
+    layer.forEach(n=>{n.x=Math.round(cx);n.y=Math.round(y);cx+=n.w+40;});
+  });
+}
+function flowLayoutHorizontal(){
+  const nodes=flowEditor.nodes,edges=flowEditor.edges;
+  const indeg={};nodes.forEach(n=>indeg[n.id]=0);
+  edges.forEach(e=>{if(indeg[e.to]!==undefined)indeg[e.to]++;});
+  const depth={};
+  const queue=nodes.filter(n=>indeg[n.id]===0);
+  if(!queue.length&&nodes.length)queue.push(nodes[0]);
+  queue.forEach(n=>depth[n.id]=0);
+  const visited=new Set();let i=0;
+  while(i<queue.length){
+    const n=queue[i++];if(visited.has(n.id))continue;visited.add(n.id);
+    edges.filter(e=>e.from===n.id).forEach(e=>{const t=nodes.find(x=>x.id===e.to);if(t){depth[t.id]=Math.max(depth[t.id]||0,(depth[n.id]||0)+1);if(!visited.has(t.id))queue.push(t);}});
+  }
+  let maxDepth=0;Object.values(depth).forEach(d=>{if(d>maxDepth)maxDepth=d;});
+  nodes.forEach(n=>{if(depth[n.id]===undefined)depth[n.id]=maxDepth+1;});
+  const layers={};nodes.forEach(n=>{const d=depth[n.id];if(!layers[d])layers[d]=[];layers[d].push(n);});
+  const colGap=180,startX=40;
+  Object.keys(layers).sort((a,b)=>+a-+b).forEach(d=>{
+    const layer=layers[d];
+    const totalH=layer.reduce((s,n)=>s+n.h,0)+(layer.length-1)*30;
+    let cy=Math.max(20,(FLOW_DESIGN_H-totalH)/2);
+    const x=startX+(+d)*colGap;
+    layer.forEach(n=>{n.x=Math.round(x);n.y=Math.round(cy);cy+=n.h+30;});
+  });
+}
+function flowLayoutWithSwimlanes(){
+  const lanes=flowEditor.swimlanes;
+  const n=lanes.length;
+  const laneH=FLOW_DESIGN_H/n;
+  const byLane={};
+  lanes.forEach(l=>byLane[l.id]=[]);
+  flowEditor.nodes.forEach(node=>{
+    const lid=node.laneId;
+    if(lid&&byLane[lid])byLane[lid].push(node);
+    else if(lanes[0])byLane[lanes[0].id].push(node);
+  });
+  lanes.forEach((lane,i)=>{
+    const laneNodes=byLane[lane.id]||[];
+    const startX=100,gap=30;
+    let cx=startX;
+    const cy=i*laneH+laneH/2;
+    laneNodes.forEach(node=>{node.x=Math.round(cx);node.y=Math.round(cy-node.h/2);cx+=node.w+gap;});
+  });
+}
+
+/* ==================== 启动 ==================== */
 function boot(){
   try{
     loadTemplates();
@@ -2596,7 +3310,7 @@ function boot(){
     renderAll();
     setTimeout(fitCanvas,100);
     applyTemplateToDeck();
-    console.log("%c PPT Master Lite Pro · 增强版（Presenton 模板 + WebGL + 演示者增强）","background:#111;color:#fff;padding:4px 12px;border-radius:8px;font-weight:700");
+    console.log("%c PPT Master Lite Pro · 全功能版 ","background:linear-gradient(135deg,#FF6B35,#EC4899);color:#fff;padding:4px 12px;border-radius:8px;font-weight:700");
   }catch(err){
     console.error("启动失败:",err);
     deck={title:"未命名演示",author:"PPT Master Lite Pro",slides:[]};
